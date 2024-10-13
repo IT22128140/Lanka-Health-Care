@@ -25,6 +25,8 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
     super.initState();
   }
 
+  late String paymentStatus;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,6 +84,7 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                           itemBuilder: (context, index) {
                             final DocumentSnapshot documentSnapshot =
                                 querySnapshot.docs[index];
+                            paymentStatus = documentSnapshot['paymentStatus'];
                             return ListTile(
                               title: StreamBuilder<DocumentSnapshot>(
                                   stream: database.getPatientByUid(
@@ -117,7 +120,8 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                                 children: [
                                   IconButton(
                                       onPressed: () {
-                                        
+                                        _viewPaymentDialog(context,
+                                            documentSnapshot.id, paymentStatus);
                                       },
                                       icon: const Icon(Icons.payment)),
                                   IconButton(

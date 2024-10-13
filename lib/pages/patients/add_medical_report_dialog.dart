@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lanka_health_care/models/medical_reports.dart';
 import 'package:lanka_health_care/services/database.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class AddMedicalReportDialog {
-    static void showAddMedicalReportDialog(BuildContext context, String patientId) {
+  static void showAddMedicalReportDialog(
+      BuildContext context, String patientId) {
     DatabaseService databaseService = DatabaseService();
     final TextEditingController allergies = TextEditingController();
     final TextEditingController medications = TextEditingController();
@@ -13,21 +15,24 @@ class AddMedicalReportDialog {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add Medical Info'),
+          title: const Text(AppStrings.addMedicalInfoTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               TextField(
                 controller: allergies,
-                decoration: const InputDecoration(labelText: 'Allergies'),
+                decoration:
+                    const InputDecoration(labelText: AppStrings.allergiesLabel),
               ),
               TextField(
                 controller: medications,
-                decoration: const InputDecoration(labelText: 'Medications'),
+                decoration: const InputDecoration(
+                    labelText: AppStrings.medicationsLabel),
               ),
               TextField(
                 controller: surgeries,
-                decoration: const InputDecoration(labelText: 'Surgeries'),
+                decoration:
+                    const InputDecoration(labelText: AppStrings.surgeriesLabel),
               ),
             ],
           ),
@@ -36,7 +41,7 @@ class AddMedicalReportDialog {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: const Text(AppStrings.cancelButton),
             ),
             TextButton(
               onPressed: () {
@@ -49,7 +54,7 @@ class AddMedicalReportDialog {
                     ));
                 Navigator.of(context).pop();
               },
-              child: const Text('Add'),
+              child: const Text(AppStrings.addMedicalReportButton),
             ),
           ],
         );

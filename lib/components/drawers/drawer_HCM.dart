@@ -41,12 +41,6 @@ class DrawerHcm extends DrawerCustom {
                     Navigator.pushNamed(context, '/hcmDashboard');
                   },
                 ),
-                ListTile(
-                  title: const Text('Patients'),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/patients');
-                  },
-                ),
               ],
             ),
           ),
