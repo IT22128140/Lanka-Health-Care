@@ -13,6 +13,7 @@ import 'package:lanka_health_care/pages/healthcareprovider/healthcareprovider_da
 import 'package:lanka_health_care/pages/heathcaremanager/healthcaremanager_dashboard.dart';
 import 'package:lanka_health_care/pages/patients/patients_details.dart';
 import 'package:lanka_health_care/pages/patients/patients_page.dart';
+import 'package:lanka_health_care/pages/payment/recurring_payment.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,6 +52,7 @@ class _MyAppState extends State<MyApp> {
         '/doctorDashboard': (context) => const DoctorDashboard(),
         '/healthcareManagerDashboard': (context) =>
             const HealthcaremanagerDashboard(),
+
         '/healthcareProviderDashboard': (context) =>
             const HealthcareproviderDashboard(),
         '/manageAvailability': (context) => const AvailabilityPage(),
@@ -64,6 +66,7 @@ class _MyAppState extends State<MyApp> {
               drawer: DrawerHcp(),
             ),
         '/appointmentshcp': (context) => const AppointmentsHcp(),
+        '/recurringPayment': (context) => const RecurringPayment(),
 
         //hcm
         '/hcmDashboard': (context) => const HealthcaremanagerDashboard(),

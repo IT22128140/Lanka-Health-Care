@@ -4,7 +4,7 @@ import 'package:lanka_health_care/models/availability.dart';
 import 'package:lanka_health_care/models/patients.dart';
 import 'package:lanka_health_care/models/treatment_history.dart';
 import 'package:lanka_health_care/models/medical_reports.dart';
-import 'package:lanka_health_care/models/paymnet.dart';
+import 'package:lanka_health_care/models/payment.dart';
 
 class DatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -225,9 +225,88 @@ class DatabaseService {
     }
   }
 
+  //get appointment count by month
+  Future<double> getAppointmentCountByMonth(String month) async {
+    try {
+      QuerySnapshot querySnapshot = await appointmentCollection
+          .where('date', isGreaterThanOrEqualTo: '$month-01')
+          .where('date', isLessThanOrEqualTo: '$month-31')
+          .get();
+      return querySnapshot.docs.length.toDouble();
+    } catch (e) {
+      print(e);
+      return 0;
+    }
+  }
+
+  //get appoint count by week
+  Future<double> getAppointmentCountByWeek(
+      String startDate, String endDate) async {
+    try {
+      QuerySnapshot querySnapshot = await appointmentCollection
+          .where('date', isGreaterThanOrEqualTo: startDate)
+          .where('date', isLessThanOrEqualTo: endDate)
+          .get();
+      return querySnapshot.docs.length.toDouble();
+    } catch (e) {
+      print(e);
+      return 0;
+    }
+  }
+
+  //get appointment count by daily
+  Future<double> getAppointmentCountByDay(String date, int dayOfWeek) async {
+    try {
+      QuerySnapshot querySnapshot = await appointmentCollection
+          .where('date', isEqualTo: date)
+          .where('dayOfWeek', isEqualTo: dayOfWeek)
+          .get();
+      return querySnapshot.docs.length.toDouble();
+    } catch (e) {
+      print(e);
+      return 0;
+    }
+  }
+
+  //create appointment and payment
+  Future<void> createAppointmentAndPayment(
+      Appointment appointments, Payment payment) async {
+    try {
+      DocumentReference documentReference =
+          await appointmentCollection.add(appointments.toMap());
+      await documentReference.collection('payments').add(payment.toMap());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  //get appointments with reccuring payment
+  Stream<QuerySnapshot> getAppointmentsWithRecurringPayment() {
+    return appointmentCollection
+        .where('paymentStatus', isEqualTo: 'Recurring')
+        .snapshots();
+  }
+
+  //get appointment payment status
+  Future<String> getAppointmentPaymentStatus(String uid) async {
+    try {
+      DocumentSnapshot documentSnapshot =
+          await appointmentCollection.doc(uid).get();
+      if (documentSnapshot.exists) {
+        return (documentSnapshot.data()
+            as Map<String, dynamic>)['paymentStatus'] as String;
+      } else {
+        return '';
+      }
+    } catch (e) {
+      print(e);
+      return '';
+    }
+  }
+
 //payment
   //create payment
-  Future<void> createPayment(Paymnet paymnet, String appointmentId) {
+  Future<void> createPayment(Payment paymnet, String appointmentId) {
     return appointmentCollection
         .doc(appointmentId)
         .collection('payments')
@@ -244,7 +323,7 @@ class DatabaseService {
 
   //edit payment
   Future<void> editPayment(
-      String appointmentId, String paymentId, Paymnet paymnet) async {
+      String appointmentId, String paymentId, Payment paymnet) async {
     try {
       await appointmentCollection
           .doc(appointmentId)
@@ -268,6 +347,7 @@ class DatabaseService {
       print(e);
     }
   }
+
 //availability
   //add availability
   Future<void> addAvailability(Availability availability, String uid) {

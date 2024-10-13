@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Paymnet {
+class Payment {
   final String bankName;
   final String accountNumber;
   final String accountName;
@@ -8,7 +8,7 @@ class Paymnet {
   final String date;
   final String depositSlip;
 
-  Paymnet(
+  Payment(
       {required this.bankName,
       required this.accountNumber,
       required this.accountName,
@@ -27,8 +27,8 @@ class Paymnet {
     };
   }
 
-  factory Paymnet.fromSnapshot(DocumentSnapshot snapshot) {
-    return Paymnet(
+  factory Payment.fromSnapshot(DocumentSnapshot snapshot) {
+    return Payment(
       bankName: snapshot['bankName'],
       accountNumber: snapshot['accountNumber'],
       accountName: snapshot['accountName'],

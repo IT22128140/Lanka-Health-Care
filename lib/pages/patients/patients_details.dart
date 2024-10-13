@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lanka_health_care/components/my_button.dart';
+import 'package:lanka_health_care/pages/patients/add_treatment_history_dialog.dart';
+import 'package:lanka_health_care/pages/patients/edit_medical_report_dialog.dart';
+import 'package:lanka_health_care/pages/patients/edit_treatment_history_dialog.dart';
 import 'package:lanka_health_care/services/database.dart';
-import 'package:lanka_health_care/models/medical_reports.dart';
-import 'package:lanka_health_care/models/treatment_history.dart';
+import 'package:lanka_health_care/pages/patients/add_medical_report_dialog.dart';
 
 class PatientsDetails extends StatefulWidget {
   final String patientId;
@@ -17,7 +19,16 @@ class PatientsDetails extends StatefulWidget {
 
 class _PatientsDetailsState extends State<PatientsDetails> {
   final DatabaseService databaseService = DatabaseService();
-  String? doctorId; // Define the doctorId variable
+  final AddMedicalReportDialog addMedicalReportDialog =
+      AddMedicalReportDialog();
+  final EditMedicalReportDialog editMedicalReportDialog =
+      EditMedicalReportDialog();
+  final AddTreatmentHistoryDialog addTreatmentHistoryDialog =
+      AddTreatmentHistoryDialog();
+  final EditTreatmentHistoryDialog editTreatmentHistoryDialog =
+      EditTreatmentHistoryDialog();
+
+  String? doctorId;
 
   calculateAge(DateTime date) {
     var now = DateTime.now();
@@ -96,7 +107,8 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                         MyButton(
                           width: 500,
                           onTap: () {
-                            _showAddMedicalReportDialog(context);
+                            AddMedicalReportDialog.showAddMedicalReportDialog(
+                                context, widget.patientId);
                           },
                           text: 'Add Medical Report',
                         ),
@@ -127,8 +139,12 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                               IconButton(
                                 icon: const Icon(Icons.edit),
                                 onPressed: () {
-                                  _showEditMedicalReportDialog(context,
-                                      medicalHistoryId, medicalHistory);
+                                  EditMedicalReportDialog
+                                      .showEditMedicalReportDialog(
+                                          context,
+                                          medicalHistoryId,
+                                          medicalHistory,
+                                          widget.patientId);
                                 },
                               ),
                               IconButton(
@@ -194,8 +210,12 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                               IconButton(
                                 icon: const Icon(Icons.edit),
                                 onPressed: () {
-                                  _showEditTreatmentHistoryDialog(context,
-                                      treatmentHistoryId, treatmentHistory);
+                                  EditTreatmentHistoryDialog
+                                      .showEditTreatmentHistoryDialog(
+                                          context,
+                                          treatmentHistoryId,
+                                          treatmentHistory,
+                                          widget.patientId);
                                 },
                               ),
                               IconButton(
@@ -216,357 +236,13 @@ class _PatientsDetailsState extends State<PatientsDetails> {
           MyButton(
             width: 500,
             onTap: () {
-              _showAddTreatmentHistoryDialog(context);
+              AddTreatmentHistoryDialog.showAddTreatmentHistoryDialog(
+                  context, widget.patientId);
             },
             text: 'Add Treatment History',
           ),
         ],
       ),
-    );
-  }
-
-  void _showAddMedicalReportDialog(BuildContext context) {
-    final TextEditingController allergies = TextEditingController();
-    final TextEditingController medications = TextEditingController();
-    final TextEditingController surgeries = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add Medical Info'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextField(
-                controller: allergies,
-                decoration: const InputDecoration(labelText: 'Allergies'),
-              ),
-              TextField(
-                controller: medications,
-                decoration: const InputDecoration(labelText: 'Medications'),
-              ),
-              TextField(
-                controller: surgeries,
-                decoration: const InputDecoration(labelText: 'Surgeries'),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                databaseService.addMedicalReport(
-                    widget.patientId,
-                    MedicalReports(
-                      allergies: allergies.text,
-                      medications: medications.text,
-                      surgeries: surgeries.text,
-                    ));
-                Navigator.of(context).pop();
-              },
-              child: const Text('Add'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showEditMedicalReportDialog(
-      BuildContext context, String medicalHistoryId, data) {
-    final TextEditingController allergies =
-        TextEditingController(text: data['allergies']);
-    final TextEditingController medications =
-        TextEditingController(text: data['medications']);
-    final TextEditingController surgeries =
-        TextEditingController(text: data['surgeries']);
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Edit Medical Info'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextField(
-                controller: allergies,
-                decoration: const InputDecoration(labelText: 'Allergies'),
-              ),
-              TextField(
-                controller: medications,
-                decoration: const InputDecoration(labelText: 'Medications'),
-              ),
-              TextField(
-                controller: surgeries,
-                decoration: const InputDecoration(labelText: 'Surgeries'),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                databaseService.editMedicalReport(
-                    widget.patientId,
-                    medicalHistoryId,
-                    MedicalReports(
-                      allergies: allergies.text,
-                      medications: medications.text,
-                      surgeries: surgeries.text,
-                    ));
-                Navigator.of(context).pop();
-              },
-              child: const Text('Edit'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showAddTreatmentHistoryDialog(BuildContext context) {
-    final TextEditingController treatment = TextEditingController();
-    final TextEditingController date = TextEditingController();
-    final TextEditingController doctor = TextEditingController();
-    final TextEditingController doctorId = TextEditingController();
-    final TextEditingController description = TextEditingController();
-    final TextEditingController prescription = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add Treatment History'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextField(
-                controller: treatment,
-                decoration: const InputDecoration(labelText: 'Treatment'),
-              ),
-              TextField(
-                controller: date,
-                decoration: const InputDecoration(labelText: 'Date'),
-                onTap: () async {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime.now(),
-                  );
-                  if (pickedDate != null) {
-                    date.text = DateFormat('yyyy-MM-dd').format(pickedDate);
-                  }
-                },
-              ),
-              Autocomplete<Map<String, dynamic>>(
-                optionsBuilder: (TextEditingValue textEditingValue) async {
-                  if (textEditingValue.text.isEmpty) {
-                    return const Iterable<Map<String, dynamic>>.empty();
-                  }
-                  final doctorsList = await databaseService
-                      .getDoctorNamesByFirstName(textEditingValue.text);
-                  return doctorsList.where((doctor) {
-                    return (doctor['firstName'] ?? '')
-                        .toLowerCase()
-                        .contains(textEditingValue.text.toLowerCase());
-                  }).map((doctor) => {
-                        'id': doctor['id'] ?? '',
-                        'firstName': doctor['firstName'] ?? '',
-                        'lastName': doctor['lastName'] ?? '',
-                      });
-                },
-                displayStringForOption: (Map<String, dynamic> option) =>
-                    (option['firstName'] ?? '') +
-                    ' ' +
-                    (option['lastName'] ?? ''),
-                onSelected: (Map<String, dynamic> selection) {
-                  doctor.text = (selection['firstName'] ?? '') +
-                      ' ' +
-                      (selection['lastName'] ?? '');
-                  doctorId.text = selection['id'] ?? '';
-                },
-                fieldViewBuilder: (BuildContext context,
-                    TextEditingController textEditingController,
-                    FocusNode focusNode,
-                    VoidCallback onFieldSubmitted) {
-                  return TextField(
-                    controller: textEditingController,
-                    focusNode: focusNode,
-                    decoration: const InputDecoration(labelText: 'Doctor'),
-                  );
-                },
-              ),
-              TextField(
-                controller: description,
-                decoration: const InputDecoration(labelText: 'Description'),
-              ),
-              TextField(
-                controller: prescription,
-                decoration: const InputDecoration(labelText: 'Prescription'),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                databaseService.addTreatmentHistory(
-                    widget.patientId,
-                    TreatmentHistory(
-                      treatment: treatment.text,
-                      date: date.text,
-                      doctor: doctorId.text,
-                      doctorName: doctor.text,
-                      description: description.text,
-                      prescription: prescription.text,
-                    ));
-                Navigator.of(context).pop();
-              },
-              child: const Text('Add'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showEditTreatmentHistoryDialog(
-      BuildContext context, String treatmentHistoryId, data) {
-    final TextEditingController treatment =
-        TextEditingController(text: data['treatment']);
-    final TextEditingController date =
-        TextEditingController(text: data['date']);
-    final TextEditingController doctor =
-        TextEditingController(text: data['doctorName']);
-    final TextEditingController description =
-        TextEditingController(text: data['description']);
-    final TextEditingController prescription =
-        TextEditingController(text: data['prescription']);
-    final TextEditingController doctorId =
-        TextEditingController(text: data['doctor']);
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Edit Treatment History'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextField(
-                controller: treatment,
-                decoration: const InputDecoration(labelText: 'Treatment'),
-              ),
-              TextField(
-                controller: date,
-                decoration: const InputDecoration(labelText: 'Date'),
-                onTap: () async {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime.now(),
-                  );
-                  if (pickedDate != null) {
-                    date.text = DateFormat('yyyy-MM-dd').format(pickedDate);
-                  }
-                },
-              ),
-              Autocomplete<Map<String, dynamic>>(
-                optionsBuilder: (TextEditingValue textEditingValue) async {
-                  if (textEditingValue.text.isEmpty) {
-                    return const Iterable<Map<String, dynamic>>.empty();
-                  }
-                  final doctorsList = await databaseService
-                      .getDoctorNamesByFirstName(textEditingValue.text);
-                  return doctorsList.where((doctor) {
-                    return (doctor['firstName'] ?? '')
-                        .toLowerCase()
-                        .contains(textEditingValue.text.toLowerCase());
-                  }).map((doctor) => {
-                        'id': doctor['id'] ?? '',
-                        'firstName': doctor['firstName'] ?? '',
-                        'lastName': doctor['lastName'] ?? '',
-                      });
-                },
-                displayStringForOption: (Map<String, dynamic> option) =>
-                    (option['firstName'] ?? '') +
-                    ' ' +
-                    (option['lastName'] ?? ''),
-                onSelected: (Map<String, dynamic> selection) {
-                  doctor.text = (selection['firstName'] ?? '') +
-                      ' ' +
-                      (selection['lastName'] ?? '');
-                  doctorId.text = selection['id'] ?? '';
-                },
-                fieldViewBuilder: (BuildContext context,
-                    TextEditingController textEditingController,
-                    FocusNode focusNode,
-                    VoidCallback onFieldSubmitted) {
-                  return TextField(
-                    controller: textEditingController,
-                    focusNode: focusNode,
-                    decoration: const InputDecoration(labelText: 'Doctor'),
-                  );
-                },
-              ),
-              TextField(
-                controller: description,
-                decoration: const InputDecoration(labelText: 'Description'),
-              ),
-              TextField(
-                controller: prescription,
-                decoration: const InputDecoration(labelText: 'Prescription'),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                databaseService.editTreatmentHistory(
-                    widget.patientId,
-                    treatmentHistoryId,
-                    TreatmentHistory(
-                      treatment: treatment.text,
-                      date: date.text,
-                      doctor: doctor.text,
-                      doctorName: doctorId.text,
-                      description: description.text,
-                      prescription: prescription.text,
-                    ));
-                Navigator.of(context).pop();
-              },
-              child: const Text('Edit'),
-            ),
-          ],
-        );
-      },
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:lanka_health_care/components/drawers/drawer_doctor.dart';
 import 'package:lanka_health_care/components/my_button.dart';
 import 'package:lanka_health_care/models/availability.dart';
 import 'package:lanka_health_care/services/database.dart';
+import 'edit_availability_dialog.dart';
 
 class AvailabilityPage extends StatefulWidget {
   const AvailabilityPage({super.key});
@@ -68,7 +69,8 @@ class _AvailabilityState extends State<AvailabilityPage> {
                               IconButton(
                                 icon: const Icon(Icons.edit),
                                 onPressed: () {
-                                  _showEditDialog(context, data, dataid);
+                                  EditAvailabilityDialog()
+                                      .show(context, data, dataid, user.uid);
                                 },
                               ),
                               const SizedBox(width: 30),
@@ -167,106 +169,6 @@ class _AvailabilityState extends State<AvailabilityPage> {
           ],
         ),
       ),
-    );
-  }
-
-  void _showEditDialog(
-      BuildContext context, Map<String, dynamic> data, String dataid) {
-    final TextEditingController editDateController =
-        TextEditingController(text: data['date']);
-    final TextEditingController editArrivetimeController =
-        TextEditingController(text: data['arrivetime']);
-    final TextEditingController editLeavetimeController =
-        TextEditingController(text: data['leavetime']);
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Edit Availability'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              DropdownButtonFormField<String>(
-                value: editDateController.text,
-                decoration: const InputDecoration(
-                  labelText: 'Date',
-                ),
-                items: <String>[
-                  'Sunday',
-                  'Monday',
-                  'Tuesday',
-                  'Wednesday',
-                  'Thursday',
-                  'Friday',
-                  'Saturday',
-                ].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    editDateController.text = newValue!;
-                  });
-                },
-              ),
-              TextField(
-                controller: editArrivetimeController,
-                decoration: const InputDecoration(
-                  labelText: 'Arrival Time',
-                ),
-                onTap: () => showTimePicker(
-                  context: context,
-                  initialTime: TimeOfDay.now(),
-                ).then((value) {
-                  if (value != null) {
-                    editArrivetimeController.text = value.format(context);
-                  }
-                }),
-              ),
-              TextField(
-                controller: editLeavetimeController,
-                decoration: const InputDecoration(
-                  labelText: 'Leave Time',
-                ),
-                onTap: () => showTimePicker(
-                  context: context,
-                  initialTime: TimeOfDay.now(),
-                ).then((value) {
-                  if (value != null) {
-                    editLeavetimeController.text = value.format(context);
-                  }
-                }),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                database.editAvailability(
-                  user.uid,
-                  dataid,
-                  Availability(
-                    date: editDateController.text,
-                    arrivetime: editArrivetimeController.text,
-                    leavetime: editLeavetimeController.text,
-                  ),
-                );
-                Navigator.of(context).pop();
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
     );
   }
 }

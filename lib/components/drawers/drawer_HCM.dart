@@ -24,7 +24,7 @@ class DrawerHcm extends DrawerCustom {
               color: Colors.blue,
             ),
             child: Center(
-              child: Text('Doctor Dashboard',
+              child: Text('Health Care Manager Dashboard',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -36,27 +36,15 @@ class DrawerHcm extends DrawerCustom {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 ListTile(
-                  title: const Text('Health Care Dashboard'),
+                  title: const Text('Health Care Manager Dashboard'),
                   onTap: () {
                     Navigator.pushNamed(context, '/hcmDashboard');
-                  },
-                ),
-                ListTile(
-                  title: const Text('Manage availability'),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/manageAvailability');
                   },
                 ),
                 ListTile(
                   title: const Text('Patients'),
                   onTap: () {
                     Navigator.pushNamed(context, '/patients');
-                  },
-                ),
-                ListTile(
-                  title: const Text('Appointments'),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/appointmentsDoctor');
                   },
                 ),
               ],

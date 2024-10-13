@@ -16,6 +16,10 @@ dependencies:
   intl: ^0.19.0
   image_picker_web: ^4.0.0
   cached_network_image: ^3.1.0
+  fl_chart: ^0.69.0
+  pdf: ^3.11.1
+  printing: ^5.13.3
+  flutter_html: ^3.0.0-alpha.1
 
 dev_dependencies:
   flutter_test:
@@ -27,3 +31,4 @@ flutter:
 
   assets:
     - lib/resources/images/logo.png
+    - lib/fonts/Nunito-Regular.ttf

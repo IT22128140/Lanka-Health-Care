@@ -2,28 +2,29 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lanka_health_care/components/drawers/drawer_HCP.dart';
-import 'package:lanka_health_care/components/my_button.dart';
 import 'package:lanka_health_care/pages/appointments/appointments.dart';
 import 'package:lanka_health_care/services/database.dart';
 import 'package:lanka_health_care/pages/payment/show_payment.dart';
 
-class AppointmentsHcp extends Appointments {
-  const AppointmentsHcp({super.key});
+class RecurringPayment extends Appointments {
+  const RecurringPayment({super.key});
 
   @override
-  State<Appointments> createState() => _AppointmentsHcpState();
+  State<Appointments> createState() => _RecurrinfPaymentState();
 }
 
-class _AppointmentsHcpState extends State<AppointmentsHcp> {
+class _RecurrinfPaymentState extends State<RecurringPayment> {
   final DatabaseService database = DatabaseService();
   final User user = FirebaseAuth.instance.currentUser!;
   late Stream<QuerySnapshot<Object?>> filteredData;
+
   @override
   void initState() {
-    filteredData = database.getAppointmentsByDate(
-        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}");
+    filteredData = database.getAppointmentsWithRecurringPayment();
     super.initState();
   }
+
+late String paymentStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -36,24 +37,6 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: () async {
-                  DateTime? selectedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                  );
-                  if (selectedDate != null) {
-                    // Handle the selected date
-                    setState(() {
-                      filteredData = database.getAppointmentsByDate(
-                          "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}");
-                    });
-                  }
-                },
-                child: const Text('Select Date'),
-              ),
               const SizedBox(height: 50),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
@@ -82,8 +65,10 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                           itemBuilder: (context, index) {
                             final DocumentSnapshot documentSnapshot =
                                 querySnapshot.docs[index];
+                            paymentStatus = documentSnapshot['paymentStatus'];
                             return ListTile(
                               title: StreamBuilder<DocumentSnapshot>(
+
                                   stream: database.getPatientByUid(
                                       documentSnapshot['patientuid']),
                                   builder: (context, snapshot) {
@@ -117,7 +102,8 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                                 children: [
                                   IconButton(
                                       onPressed: () {
-                                        
+                                        _viewPaymentDialog(
+                                            context, documentSnapshot.id, paymentStatus);
                                       },
                                       icon: const Icon(Icons.payment)),
                                   IconButton(
@@ -160,25 +146,17 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                       }
                     }),
               ),
-              MyButton(
-                  text: 'Add appointment',
-                  onTap: () {
-                    Navigator.pushNamed(context, '/add_appointment');
-                  },
-                  width: 500)
             ],
           ),
         ));
   }
 }
 
-void _viewPaymentDialog(
-    BuildContext context, String appointmentId, String paymentStatus) {
+void _viewPaymentDialog(BuildContext context, String appointmentId, String paymentStatus) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      return ViewPaymentDialog(
-          appointmentId: appointmentId, paymentStatus: paymentStatus);
+      return ViewPaymentDialog(appointmentId: appointmentId, paymentStatus: paymentStatus);
     },
   );
 }

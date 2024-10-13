@@ -53,6 +53,12 @@ class DrawerHcp extends DrawerCustom {
                     Navigator.pushNamed(context, '/appointmentshcp');
                   },
                 ),
+                ListTile(
+                  title: const Text('Recurring Payment'),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/recurringPayment');
+                  },
+                ),
               ],
             ),
           ),

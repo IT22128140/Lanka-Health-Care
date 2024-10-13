@@ -18,7 +18,8 @@ class _AppointmentsDoctorState extends State<AppointmentsDoctor> {
   late Stream<QuerySnapshot<Object?>> filteredData;
   @override
   void initState() {
-    filteredData = database.getAppointmentsByDoctorUid(user.uid);
+    filteredData = database.getAppointmentsByDoctorUidAndDate(user.uid,
+        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}");
     super.initState();
   }
 
