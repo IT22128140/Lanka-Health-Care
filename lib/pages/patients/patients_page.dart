@@ -29,10 +29,13 @@ class _PatientsState extends State<PatientsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.patientsDetails),
+        backgroundColor: Colors.white,
+        elevation: 5.0, // This adds a shadow to the AppBar
+        shadowColor: Colors.grey,
       ),
       drawer: widget.drawer,
       body: Center(
-        child: Column(
+        child: Row(
           children: [
             Expanded(
                 child: StreamBuilder<QuerySnapshot>(
@@ -64,19 +67,22 @@ class _PatientsState extends State<PatientsPage> {
                                 final patient = patients.docs[index];
                                 final patientId = patients.docs[index].id;
                                 return ListTile(
-                                  title: Text(patient[AppStrings.patientfirstName] +
-                                      ' ' +
-                                      patient[AppStrings.patientlastName]),
+                                  title: Text(
+                                      patient[AppStrings.patientfirstName] +
+                                          ' ' +
+                                          patient[AppStrings.patientlastName]),
                                   subtitle: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text('${AppStrings.contact}: ${patient[AppStrings.patientPhone]}'),
+                                      Text(
+                                          '${AppStrings.contact}: ${patient[AppStrings.patientPhone]}'),
                                       Text(
                                           '${AppStrings.patientDOBLabel}: ${DateFormat('yyyy-MM-dd').format(patient[AppStrings.patientdob].toDate())}'),
                                       Text(
                                           '${AppStrings.patientAgeLabel}: ${calculateAge(patient[AppStrings.patientdob].toDate())}'),
-                                      Text('${AppStrings.patientGenderLabel}: ${patient[AppStrings.patientGender]}'),
+                                      Text(
+                                          '${AppStrings.patientGenderLabel}: ${patient[AppStrings.patientGender]}'),
                                     ],
                                   ),
                                   trailing: Row(
@@ -112,74 +118,139 @@ class _PatientsState extends State<PatientsPage> {
                       }
                     })),
             //add patient form
-            Padding(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: firstNameController,
-                      decoration: const InputDecoration(
-                        labelText: AppStrings.patientFirstNameLabel,
-                      ),
-                    ),
-                    TextField(
-                      controller: lastNameController,
-                      decoration: const InputDecoration(
-                        labelText: AppStrings.patientLastNameLabel,
-                      ),
-                    ),
-                    TextField(
-                      controller: dobController,
-                      decoration: const InputDecoration(
-                        labelText: AppStrings.patientDOBLabel,
-                      ),
-                      readOnly: true,
-                      onTap: () => showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
-                      ).then((value) {
-                        if (value != null) {
-                          dobController.text =
-                              DateFormat('yyyy-MM-dd').format(value);
-                        }
-                      }),
-                    ),
-                    TextField(
-                      controller: phoneController,
-                      decoration: const InputDecoration(
-                        labelText: AppStrings.patientPhoneLabel,
-                      ),
-                    ),
-                    DropdownButtonFormField<String>(
-                      items: [AppStrings.male, AppStrings.female].map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String? value) {
-                        genderController.text = value ?? '';
-                      },
-                      decoration: const InputDecoration(
-                        labelText: AppStrings.patientGenderLabel,
-                      ),
-                    ),
-                    MyButton(
-                        text: AppStrings.addPatientButton,
-                        onTap: () => {
-                              databaseService.createPatient(Patients(
-                                  firstName: firstNameController.text,
-                                  lastName: lastNameController.text,
-                                  dob: DateFormat('yyyy-MM-dd')
-                                      .parse(dobController.text),
-                                  phone: phoneController.text,
-                                  gender: genderController.text))
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: Container(
+                    color: const Color.fromARGB(255, 229, 246, 255),
+                    constraints: BoxConstraints(maxWidth: 500),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 20),
+                        const Text(
+                          AppStrings.addPtient,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 30,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: 300,
+                          child: TextField(
+                            controller: firstNameController,
+                            decoration: InputDecoration(
+                              labelText: AppStrings.patientFirstNameLabel,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              fillColor: Colors.white,
+                              filled: true,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: 300,
+                          child: TextField(
+                            controller: lastNameController,
+                            decoration: InputDecoration(
+                              labelText: AppStrings.patientLastNameLabel,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              fillColor: Colors.white,
+                              filled: true,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: 300,
+                          child: TextField(
+                            controller: dobController,
+                            decoration: InputDecoration(
+                              labelText: AppStrings.patientDOBLabel,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              fillColor: Colors.white,
+                              filled: true,
+                            ),
+                            readOnly: true,
+                            onTap: () => showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(1900),
+                              lastDate: DateTime.now(),
+                            ).then((value) {
+                              if (value != null) {
+                                dobController.text =
+                                    DateFormat('yyyy-MM-dd').format(value);
+                              }
+                            }),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: 300,
+                          child: TextField(
+                            controller: phoneController,
+                            decoration: InputDecoration(
+                              labelText: AppStrings.patientPhoneLabel,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              fillColor: Colors.white,
+                              filled: true,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: 300,
+                          child: DropdownButtonFormField<String>(
+                            items: [AppStrings.male, AppStrings.female]
+                                .map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (String? value) {
+                              genderController.text = value ?? '';
                             },
-                        width: 500)
-                  ],
-                )),
+                            decoration: InputDecoration(
+                              labelText: AppStrings.patientGenderLabel,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              fillColor: Colors.white,
+                              filled: true,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        MyButton(
+                            text: AppStrings.addPatientButton,
+                            onTap: () => {
+                                  databaseService.createPatient(Patients(
+                                      firstName: firstNameController.text,
+                                      lastName: lastNameController.text,
+                                      dob: DateFormat('yyyy-MM-dd')
+                                          .parse(dobController.text),
+                                      phone: phoneController.text,
+                                      gender: genderController.text))
+                                },
+                            width: 300),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -200,7 +271,8 @@ class _PatientsState extends State<PatientsPage> {
     final TextEditingController lastNameController =
         TextEditingController(text: data[AppStrings.patientlastName]);
     final TextEditingController dobController = TextEditingController(
-        text: DateFormat('yyyy-MM-dd').format(data[AppStrings.patientdob].toDate()));
+        text: DateFormat('yyyy-MM-dd')
+            .format(data[AppStrings.patientdob].toDate()));
     final TextEditingController phoneController =
         TextEditingController(text: data[AppStrings.patientPhone]);
     final TextEditingController genderController =
@@ -250,18 +322,21 @@ class _PatientsState extends State<PatientsPage> {
                   ),
                 ),
                 DropdownButtonFormField<String>(
-                  value: genderController.text.isNotEmpty ? genderController.text : null,
-                  items: [AppStrings.male, AppStrings.female].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
+                  value: genderController.text.isNotEmpty
+                      ? genderController.text
+                      : null,
+                  items:
+                      [AppStrings.male, AppStrings.female].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
                   }).toList(),
                   onChanged: (String? value) {
-                  genderController.text = value ?? '';
+                    genderController.text = value ?? '';
                   },
                   decoration: const InputDecoration(
-                  labelText: AppStrings.patientGenderLabel,
+                    labelText: AppStrings.patientGenderLabel,
                   ),
                 ),
               ],

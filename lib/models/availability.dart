@@ -5,7 +5,22 @@ class Availability {
   final String arrivetime;
   final String leavetime;
 
-  Availability({required this.date, required this.arrivetime, required this.leavetime});
+  Availability({required this.date, required this.arrivetime, required this.leavetime}) {
+    validate();
+  }
+
+  void validate() {
+    if (date.isEmpty) {
+      throw ArgumentError('Date cannot be empty');
+    }
+    if (arrivetime.isEmpty) {
+      throw ArgumentError('Arrival time cannot be empty');
+    }
+    if (leavetime.isEmpty) {
+      throw ArgumentError('Leave time cannot be empty');
+    }
+    // Add more validations as needed, e.g., date format, time format, etc.
+  }
 
   Map<String, dynamic> toMap() {
     return {

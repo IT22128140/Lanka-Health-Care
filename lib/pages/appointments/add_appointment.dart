@@ -46,53 +46,65 @@ class _AddAppointmentsState extends State<AddAppointment> {
                         itemBuilder: (context, index) {
                           final doctor = snapshot.data!.docs[index];
                           final doctorId = snapshot.data!.docs[index].id;
-                          return ListTile(
-                            title: Text(
-                                doctor[AppStrings.doctorFirstNameLabel] + ' ' + doctor[AppStrings.doctorLastNameLabel]),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(doctor[AppStrings.specialization]),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                StreamBuilder<QuerySnapshot>(
-                                    stream: database.getAvailability(doctorId),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const Center(
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                    Colors.blue),
-                                          ),
-                                        );
-                                      } else if (!snapshot.hasData ||
-                                          snapshot.data!.docs.isEmpty) {
-                                        return const Text(
-                                            AppStrings.notavailable);
-                                      } else {
-                                        return Column(
-                                          children: snapshot.data!.docs
-                                              .map((availability) {
-                                            return ListTile(
-                                              title: Text(availability[AppStrings.date]),
-                                              subtitle: Text(
-                                                  '${AppStrings.arriveTimeLabelcolon}  ${availability[AppStrings.arrivetime]} ${AppStrings.leaveTimeLabelcolon}  ${availability[AppStrings.leavetime]}'),
-                                              onTap: () => {
-                                                appointmentDialogue
-                                                    .showAddAppointmentDialogue(
-                                                        context,
-                                                        doctorId,
-                                                        availability)
-                                              },
+                          return Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                              ),
+                              child: ListTile(
+                                title: Text(
+                                    doctor[AppStrings.doctorFirstNameLabel] +
+                                        ' ' +
+                                        doctor[AppStrings.doctorLastNameLabel]),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(doctor[AppStrings.specialization]),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    StreamBuilder<QuerySnapshot>(
+                                        stream:
+                                            database.getAvailability(doctorId),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Center(
+                                              child: CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                        Color>(Colors.blue),
+                                              ),
                                             );
-                                          }).toList(),
-                                        );
-                                      }
-                                    }),
-                              ],
+                                          } else if (!snapshot.hasData ||
+                                              snapshot.data!.docs.isEmpty) {
+                                            return const Text(
+                                                AppStrings.notavailable);
+                                          } else {
+                                            return Column(
+                                              children: snapshot.data!.docs
+                                                  .map((availability) {
+                                                return ListTile(
+                                                  title: Text(availability[
+                                                      AppStrings.date]),
+                                                  subtitle: Text(
+                                                      '${AppStrings.arriveTimeLabelcolon}  ${availability[AppStrings.arrivetime]} ${AppStrings.leaveTimeLabelcolon}  ${availability[AppStrings.leavetime]}'),
+                                                  onTap: () => {
+                                                    appointmentDialogue
+                                                        .showAddAppointmentDialogue(
+                                                            context,
+                                                            doctorId,
+                                                            availability)
+                                                  },
+                                                );
+                                              }).toList(),
+                                            );
+                                          }
+                                        }),
+                                  ],
+                                ),
+                              ),
                             ),
                           );
                         },
