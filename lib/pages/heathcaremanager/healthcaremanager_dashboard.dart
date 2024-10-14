@@ -108,7 +108,7 @@ class _HealthcaremanagerDashboardState
     final blob = html.Blob([pdfBytes], 'application/pdf');
     final url = html.Url.createObjectUrlFromBlob(blob);
     final anchor = html.AnchorElement(href: url)
-      ..setAttribute('download', 'healthcare_dashboard.pdf');
+      ..setAttribute(AppStrings.download, AppStrings.healthcareDashboardpdf);
     html.document.body!.append(anchor);
     anchor.click();
     anchor.remove();

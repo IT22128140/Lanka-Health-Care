@@ -156,7 +156,7 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}',
+                    return Text('${AppStrings.error} ${snapshot.error}',
                         style:
                             const TextStyle(color: Colors.blue, fontSize: 30));
                   } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -186,11 +186,11 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                  '${AppStrings.allergiesLabel}: ${medicalHistory[AppStrings.allergies] ?? 'N/A'}'),
+                                  '${AppStrings.allergiescolon} ${medicalHistory[AppStrings.allergies] ?? 'N/A'}'),
                               Text(
-                                  '${AppStrings.medicationsLabel}: ${medicalHistory[AppStrings.medications] ?? 'N/A'}'),
+                                  '${AppStrings.medicationscolon} ${medicalHistory[AppStrings.medications] ?? 'N/A'}'),
                               Text(
-                                  '${AppStrings.surgeriesLabel}: ${medicalHistory[AppStrings.surgeries] ?? 'N/A'}'),
+                                  '${AppStrings.surgeriescolon} ${medicalHistory[AppStrings.surgeries] ?? 'N/A'}'),
                             ],
                           ),
                           trailing: Row(
@@ -234,7 +234,7 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}',
+                    return Text('${AppStrings.error} ${snapshot.error}',
                         style:
                             const TextStyle(color: Colors.blue, fontSize: 30));
                   } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -253,15 +253,15 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                  '${AppStrings.treatment} : ${treatmentHistory[AppStrings.treatment] ?? 'N/A'}'),
+                                  '${AppStrings.treatmentcolon}  ${treatmentHistory[AppStrings.treatment] ?? 'N/A'}'),
                               Text(
-                                  '${AppStrings.dateLabel}: ${treatmentHistory[AppStrings.date] ?? 'N/A'}'),
+                                  '${AppStrings.colondate} ${treatmentHistory[AppStrings.date] ?? 'N/A'}'),
                               Text(
-                                  '${AppStrings.doctorLabel}: ${treatmentHistory[AppStrings.doctorName] ?? 'N/A'}'),
+                                  '${AppStrings.doctorcolon} ${treatmentHistory[AppStrings.doctorName] ?? 'N/A'}'),
                               Text(
-                                  '${AppStrings.descriptionLabel}: ${treatmentHistory[AppStrings.description] ?? 'N/A'}'),
+                                  '${AppStrings.descriptioncolon} ${treatmentHistory[AppStrings.description] ?? 'N/A'}'),
                               Text(
-                                  '${AppStrings.prescriptionLabel}: ${treatmentHistory[AppStrings.prescription] ?? 'N/A'}'),
+                                  '${AppStrings.prescriptioncolon} ${treatmentHistory[AppStrings.prescription] ?? 'N/A'}'),
                             ],
                           ),
                           trailing: Row(

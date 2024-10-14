@@ -1,8 +1,12 @@
 class AppStrings {
+  static const String appName = 'Lanka Health Care'; 
   static const String addMedicalInfoTitle = 'Add Medical Info';
   static const String allergiesLabel = 'Allergies';
+  static const String allergiescolon = 'Allergies:';
   static const String medicationsLabel = 'Medications';
+  static const String medicationscolon = 'Medications:';
   static const String surgeriesLabel = 'Surgeries';
+  static const String surgeriescolon = 'Surgeries:';
   static const String cancelButton = 'Cancel';
   static const String saveButton = 'Save';
   static const String addButton = 'Add';
@@ -10,14 +14,18 @@ class AppStrings {
   static const String treatmentLabel = 'Treatment';
   static const String dateLabel = 'Date';
   static const String doctorLabel = 'Doctor';
+  static const String doctorcolon = 'Doctor:';
   static const String doctorFirstNameLabel = 'firstName';
   static const String doctorLastNameLabel = 'lastName';
   static const String descriptionLabel = 'Description';
+  static const String descriptioncolon = 'Description:';
   static const String prescriptionLabel = 'Prescription';
+  static const String prescriptioncolon = 'Prescription:';
   static const String addTreatmentHistoryButton = 'Add';
   static const String addPatientTitle = 'Add Patient';
   static const String firstNameLabel = 'First Name';
   static const String lastNameLabel = 'Last Name';
+  static const String specialization = 'specialization';
   static const String docID = 'id';
   static const String addPatientButton = 'Add Patient';
   static const String editPatientTitle = 'Edit Patient';
@@ -30,6 +38,7 @@ class AppStrings {
   static const String surgeries = 'surgeries';
   static const String editTreatmentHistoryTitle = 'Edit Treatment History';
   static const String treatment = 'treatment';
+  static const String treatmentcolon = 'Treatment:';
   static const String date = 'date';
   static const String doctorName = 'doctorName';
   static const String description = 'description';
@@ -47,6 +56,7 @@ class AppStrings {
   static const String patientlastName = 'lastName';
   static const String patientdob = 'dob';
   static const String patientPhone = 'phone';
+  static const String patientID = 'id';
   static const String patientFirstNameLabel = 'First Name';
   static const String patientLastNameLabel = 'Last Name';
   static const String patientDOBLabel = 'Date of Birth';
@@ -57,6 +67,8 @@ class AppStrings {
   static const String male = 'Male';
   static const String female = 'Female';
   static const String patients = 'Patients';
+  static const String patient = 'Patient'; 
+  static const String patientcolon = 'Patient:';
   static const String noPatientsFound = 'No patients found';
   static const String patientGenderLabel = 'Gender';
   static const String addPtient = 'Add Patient';

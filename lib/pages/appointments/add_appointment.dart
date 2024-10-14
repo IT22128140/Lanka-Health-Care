@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lanka_health_care/services/database.dart';
 import 'package:lanka_health_care/pages/appointments/add_appointment_dialog.dart'; // Import the new file
+import 'package:lanka_health_care/shared/constants.dart';
 
 class AddAppointment extends StatefulWidget {
   const AddAppointment({super.key});
@@ -19,7 +20,7 @@ class _AddAppointmentsState extends State<AddAppointment> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Appointments'),
+        title: const Text(AppStrings.addAppointment),
       ),
       body: Column(
         children: [
@@ -37,7 +38,7 @@ class _AddAppointmentsState extends State<AddAppointment> {
                     } else if (!snapshot.hasData ||
                         snapshot.data!.docs.isEmpty) {
                       return const Center(
-                        child: Text('No Doctors Found'),
+                        child: Text(AppStrings.noDoctorsFound),
                       );
                     } else {
                       return ListView.builder(
@@ -47,11 +48,11 @@ class _AddAppointmentsState extends State<AddAppointment> {
                           final doctorId = snapshot.data!.docs[index].id;
                           return ListTile(
                             title: Text(
-                                doctor['firstName'] + ' ' + doctor['lastName']),
+                                doctor[AppStrings.doctorFirstNameLabel] + ' ' + doctor[AppStrings.doctorLastNameLabel]),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(doctor['specialization']),
+                                Text(doctor[AppStrings.specialization]),
                                 const SizedBox(
                                   height: 20,
                                 ),
@@ -70,15 +71,15 @@ class _AddAppointmentsState extends State<AddAppointment> {
                                       } else if (!snapshot.hasData ||
                                           snapshot.data!.docs.isEmpty) {
                                         return const Text(
-                                            'No Availability Found');
+                                            AppStrings.notavailable);
                                       } else {
                                         return Column(
                                           children: snapshot.data!.docs
                                               .map((availability) {
                                             return ListTile(
-                                              title: Text(availability['date']),
+                                              title: Text(availability[AppStrings.date]),
                                               subtitle: Text(
-                                                  'Arrive Time: ${availability['arrivetime']} Leave Time: ${availability['leavetime']}'),
+                                                  '${AppStrings.arriveTimeLabelcolon}  ${availability[AppStrings.arrivetime]} ${AppStrings.leaveTimeLabelcolon}  ${availability[AppStrings.leavetime]}'),
                                               onTap: () => {
                                                 appointmentDialogue
                                                     .showAddAppointmentDialogue(

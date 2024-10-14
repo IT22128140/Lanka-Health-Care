@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lanka_health_care/components/drawers/drawer_doctor.dart';
 import 'package:lanka_health_care/services/database.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class DoctorDashboard extends StatelessWidget {
   const DoctorDashboard({super.key});
@@ -11,7 +12,7 @@ class DoctorDashboard extends StatelessWidget {
     final DatabaseService database = DatabaseService();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Doctor Dashboard'),
+        title: const Text(AppStrings.docDashBoard),
       ),
       drawer: const DrawerDoctor(),
       body: Center(
@@ -20,7 +21,7 @@ class DoctorDashboard extends StatelessWidget {
           children: [
             Column(
               children: [
-                const Text('Appointments Today'),
+                const Text(AppStrings.appointmentstoday),
                 StreamBuilder(
                     stream: database.getAppointmentsByDoctorUidAndDate(
                         FirebaseAuth.instance.currentUser!.uid,
@@ -34,16 +35,16 @@ class DoctorDashboard extends StatelessWidget {
                       return Column(
                         children: [
                           Text(
-                              'Total Appointments: ${snapshot.data!.docs.length}'),
+                              '${AppStrings.totalAppointments} ${snapshot.data!.docs.length}'),
                           ...snapshot.data!.docs
                               .map<Widget>((documentSnapshot) {
                             return Column(
                               children: [
                                 Text(
-                                    'Date: ${documentSnapshot['date']} Time: ${documentSnapshot['time']}'),
-                                Text('Status: ${documentSnapshot['status']}'),
+                                    '${AppStrings.colondate} ${documentSnapshot[AppStrings.date]} ${AppStrings.colontime} ${documentSnapshot[AppStrings.time]}'),
+                                Text('${AppStrings.colonstatus} ${documentSnapshot[AppStrings.status]}'),
                                 Text(
-                                    'Payment Status: ${documentSnapshot['paymentStatus']}'),
+                                    '${AppStrings.colonpaymentStatus} ${documentSnapshot[AppStrings.paymentStatus]}'),
                               ],
                             );
                           }).toList(),
@@ -54,7 +55,7 @@ class DoctorDashboard extends StatelessWidget {
             ),
             Column(
               children: [
-                const Text('Availability'),
+                const Text(AppStrings.availability),
                 const SizedBox(height: 10),
                 StreamBuilder(
                     stream: database.getAvailability(
@@ -68,15 +69,15 @@ class DoctorDashboard extends StatelessWidget {
                       return Column(
                         children: [
                           Text(
-                              'Total Availability: ${snapshot.data!.docs.length}'),
+                              '${AppStrings.totAvailability} ${snapshot.data!.docs.length}'),
                           const SizedBox(height: 10),
                           ...snapshot.data!.docs
                               .map<Widget>((documentSnapshot) {
                             return Column(
                               children: [
-                                Text('Day: ${documentSnapshot['date']}'),
-                                Text('From: ${documentSnapshot['arrivetime']}'),
-                                Text('To: ${documentSnapshot['leavetime']}'),
+                                Text('${AppStrings.colonday} ${documentSnapshot[AppStrings.date]}'),
+                                Text('${AppStrings.colonfrom} ${documentSnapshot[AppStrings.arrivetime]}'),
+                                Text('${AppStrings.colonto} ${documentSnapshot[AppStrings.leavetime]}'),
                                 const SizedBox(height: 10),
                               ],
                             );
