@@ -234,12 +234,13 @@ class AddAppointmentDialog {
                                   paymentStatus: paymentStatusController.text,
                                 ),
                                 Payment(
-                                    bankName: bankNameController.text,
-                                    accountNumber: accountNumberController.text,
-                                    accountName: accountNameController.text,
-                                    amount: amountController.text,
-                                    date: dateController.text,
-                                    depositSlip: ''));
+                                  bankName: bankNameController.text,
+                                  accountNumber: accountNumberController.text,
+                                  accountName: accountNameController.text,
+                                  amount: amountController.text,
+                                  date: dateController.text,
+                                  depositSlip: depositSlipController.text,
+                                ));
 
                             Navigator.pop(context);
                           }
