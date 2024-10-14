@@ -20,7 +20,7 @@ class AppStrings {
   static const String lastNameLabel = 'Last Name';
   static const String docID = 'id';
   static const String addPatientButton = 'Add Patient';
-  static const String editPatientTitle = 'Edit Patient';  
+  static const String editPatientTitle = 'Edit Patient';
   static const String updateButton = 'Update';
   static const String deleteButton = 'Delete';
   static const String editMedicalInfoTitle = 'Edit Medical Info';

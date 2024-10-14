@@ -1,3 +1,6 @@
+import 'dart:ui';
+import 'dart:html' as html;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +11,7 @@ import 'package:lanka_health_care/pages/patients/edit_treatment_history_dialog.d
 import 'package:lanka_health_care/services/database.dart';
 import 'package:lanka_health_care/pages/patients/add_medical_report_dialog.dart';
 import 'package:lanka_health_care/shared/constants.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class PatientsDetails extends StatefulWidget {
   final String patientId;
@@ -46,43 +50,98 @@ class _PatientsDetailsState extends State<PatientsDetails> {
       ),
       body: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            child: StreamBuilder<DocumentSnapshot>(
-                stream: databaseService.getPatientByUid(widget.patientId),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                      ),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}',
-                        style:
-                            const TextStyle(color: Colors.blue, fontSize: 30));
-                  } else if (!snapshot.hasData ||
-                      snapshot.data!.data() == null) {
-                    return const Text(AppStrings.noPatientFound,
-                        style: TextStyle(color: Colors.blue, fontSize: 30));
-                  } else {
-                    final patient =
-                        snapshot.data!.data() as Map<String, dynamic>;
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${AppStrings.patientFirstNameLabel}: ${patient[AppStrings.patientfirstName] ?? 'N/A'}'),
-                        Text('${AppStrings.patientLastNameLabel}: ${patient[AppStrings.patientlastName] ?? 'N/A'}'),
-                        Text(
-                            '${AppStrings.patientDOBLabel}: ${patient[AppStrings.patientdob] != null ? DateFormat('yyyy-MM-dd').format((patient[AppStrings.patientdob] as Timestamp).toDate()) : 'N/A'}'),
-                        Text(
-                            '${AppStrings.patientAgeLabel}: ${patient[AppStrings.patientdob] != null ? calculateAge((patient[AppStrings.patientdob] as Timestamp).toDate()) : 'N/A'}'),
-                        Text('${AppStrings.patientPhoneLabel}: ${patient[AppStrings.patientPhone] ?? 'N/A'}'),
-                      ],
-                    );
-                  }
-                }),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                child: StreamBuilder<DocumentSnapshot>(
+                    stream: databaseService.getPatientByUid(widget.patientId),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.blue),
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}',
+                            style: const TextStyle(
+                                color: Colors.blue, fontSize: 30));
+                      } else if (!snapshot.hasData ||
+                          snapshot.data!.data() == null) {
+                        return const Text(AppStrings.noPatientFound,
+                            style: TextStyle(color: Colors.blue, fontSize: 30));
+                      } else {
+                        final patient =
+                            snapshot.data!.data() as Map<String, dynamic>;
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                '${AppStrings.patientFirstNameLabel}: ${patient[AppStrings.patientfirstName] ?? 'N/A'}'),
+                            Text(
+                                '${AppStrings.patientLastNameLabel}: ${patient[AppStrings.patientlastName] ?? 'N/A'}'),
+                            Text(
+                                '${AppStrings.patientDOBLabel}: ${patient[AppStrings.patientdob] != null ? DateFormat('yyyy-MM-dd').format((patient[AppStrings.patientdob] as Timestamp).toDate()) : 'N/A'}'),
+                            Text(
+                                '${AppStrings.patientAgeLabel}: ${patient[AppStrings.patientdob] != null ? calculateAge((patient[AppStrings.patientdob] as Timestamp).toDate()) : 'N/A'}'),
+                            Text(
+                                '${AppStrings.patientPhoneLabel}: ${patient[AppStrings.patientPhone] ?? 'N/A'}'),
+                          ],
+                        );
+                      }
+                    }),
+              ),
+              Column(
+                children: [
+                  QrImageView(
+                    data: widget.patientId,
+                    version: QrVersions.auto,
+                    size: 200.0,
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final qrValidationResult = QrValidator.validate(
+                        data: widget.patientId,
+                        version: QrVersions.auto,
+                        errorCorrectionLevel: QrErrorCorrectLevel.L,
+                      );
+                      if (qrValidationResult.status ==
+                          QrValidationStatus.valid) {
+                        final qrCode = qrValidationResult.qrCode!;
+                        final painter = QrPainter.withQr(
+                          qr: qrCode,
+                          color: const Color(0xFF000000),
+                          emptyColor: const Color(0xFFFFFFFF),
+                          gapless: true,
+                        );
+                        final picData = await painter.toImageData(2048,
+                            format: ImageByteFormat.png);
+                        if (picData != null) {
+                          final buffer = picData.buffer.asUint8List();
+                          final blob = html.Blob([buffer]);
+                          final url = html.Url.createObjectUrlFromBlob(blob);
+                          final anchor = html.AnchorElement(href: url)
+                            ..setAttribute("download", "qr_code.png")
+                            ..style.display = 'none';
+                          html.document.body!.append(anchor);
+                          anchor.click();
+                          anchor.remove();
+                          html.Url.revokeObjectUrl(url);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('QR Code downloaded!')),
+                          );
+                        }
+                      }
+                    },
+                    child: const Text('Download QR Code'),
+                  ),
+                ],
+              )
+            ],
           ),
           const Text(AppStrings.medicalReport),
           Expanded(
