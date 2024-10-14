@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lanka_health_care/models/treatment_history.dart';
 import 'package:lanka_health_care/services/database.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class AddTreatmentHistoryDialog {
   static void showAddTreatmentHistoryDialog(BuildContext context, String patientId) {
@@ -17,17 +18,17 @@ class AddTreatmentHistoryDialog {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add Treatment History'),
+          title: const Text(AppStrings.addTreatmentHistoryTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               TextField(
                 controller: treatment,
-                decoration: const InputDecoration(labelText: 'Treatment'),
+                decoration: const InputDecoration(labelText: AppStrings.treatmentLabel),
               ),
               TextField(
                 controller: date,
-                decoration: const InputDecoration(labelText: 'Date'),
+                decoration: const InputDecoration(labelText: AppStrings.dateLabel),
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
                   DateTime? pickedDate = await showDatePicker(
@@ -53,20 +54,20 @@ class AddTreatmentHistoryDialog {
                         .toLowerCase()
                         .contains(textEditingValue.text.toLowerCase());
                   }).map((doctor) => {
-                        'id': doctor['id'] ?? '',
-                        'firstName': doctor['firstName'] ?? '',
-                        'lastName': doctor['lastName'] ?? '',
+                        AppStrings.docID : doctor[AppStrings.docID] ?? '',
+                        AppStrings.doctorFirstNameLabel: doctor[AppStrings.doctorFirstNameLabel] ?? '',
+                        AppStrings.doctorLastNameLabel: doctor[AppStrings.doctorLastNameLabel] ?? '',
                       });
                 },
                 displayStringForOption: (Map<String, dynamic> option) =>
-                    (option['firstName'] ?? '') +
+                    (option[AppStrings.doctorFirstNameLabel] ?? '') +
                     ' ' +
-                    (option['lastName'] ?? ''),
+                    (option[AppStrings.doctorLastNameLabel] ?? ''),
                 onSelected: (Map<String, dynamic> selection) {
-                  doctor.text = (selection['firstName'] ?? '') +
+                  doctor.text = (selection[AppStrings.doctorFirstNameLabel] ?? '') +
                       ' ' +
-                      (selection['lastName'] ?? '');
-                  doctorId.text = selection['id'] ?? '';
+                      (selection[AppStrings.doctorLastNameLabel] ?? '');
+                  doctorId.text = selection[AppStrings.docID] ?? '';
                 },
                 fieldViewBuilder: (BuildContext context,
                     TextEditingController textEditingController,
@@ -75,17 +76,17 @@ class AddTreatmentHistoryDialog {
                   return TextField(
                     controller: textEditingController,
                     focusNode: focusNode,
-                    decoration: const InputDecoration(labelText: 'Doctor'),
+                    decoration: const InputDecoration(labelText: AppStrings.doctorLabel),
                   );
                 },
               ),
               TextField(
                 controller: description,
-                decoration: const InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(labelText: AppStrings.descriptionLabel),
               ),
               TextField(
                 controller: prescription,
-                decoration: const InputDecoration(labelText: 'Prescription'),
+                decoration: const InputDecoration(labelText: AppStrings.prescriptionLabel),
               ),
             ],
           ),
@@ -94,7 +95,7 @@ class AddTreatmentHistoryDialog {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: const Text(AppStrings.cancelButton),
             ),
             TextButton(
               onPressed: () {
@@ -110,7 +111,7 @@ class AddTreatmentHistoryDialog {
                     ));
                 Navigator.of(context).pop();
               },
-              child: const Text('Add'),
+              child: const Text(AppStrings.addButton),
             ),
           ],
         );
