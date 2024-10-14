@@ -12,7 +12,27 @@ class Patients {
       required this.lastName,
       required this.dob,
       required this.phone,
-      required this.gender});
+      required this.gender}) {
+    _validate();
+  }
+
+  void _validate() {
+    if (firstName.isEmpty) {
+      throw ArgumentError('First name cannot be empty');
+    }
+    if (lastName.isEmpty) {
+      throw ArgumentError('Last name cannot be empty');
+    }
+    if (dob.isAfter(DateTime.now())) {
+      throw ArgumentError('Date of birth cannot be in the future');
+    }
+    if (!RegExp(r'^\+?[0-9]{10,15}$').hasMatch(phone)) {
+      throw ArgumentError('Invalid phone number');
+    }
+    if (gender.isEmpty || !(gender == 'Male' || gender == 'Female' || gender == 'Other')) {
+      throw ArgumentError('Invalid gender');
+    }
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -29,7 +49,7 @@ class Patients {
     return Patients(
       firstName: data['firstName'],
       lastName: data['lastName'],
-      dob: data['dob'],
+      dob: (data['dob'] as Timestamp).toDate(),
       phone: data['phone'],
       gender: data['gender'],
     );
