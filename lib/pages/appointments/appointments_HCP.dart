@@ -16,11 +16,15 @@ class AppointmentsHcp extends Appointments {
 }
 
 class _AppointmentsHcpState extends State<AppointmentsHcp> {
+  // Define the database and user objects
   final DatabaseService database = DatabaseService();
   final User user = FirebaseAuth.instance.currentUser!;
   late Stream<QuerySnapshot<Object?>> filteredData;
+
+  // Initialize the state
   @override
   void initState() {
+    // Fetch the appointments for the current date
     filteredData = database.getAppointmentsByDate(
         "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, AppStrings.zero)}-${DateTime.now().day.toString().padLeft(2, AppStrings.zero)}");
     super.initState();
@@ -32,10 +36,11 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
+        // Define the app bar
         appBar: AppBar(
           title: const Text(AppStrings.appointmentsHCP),
           backgroundColor: Colors.white,
-          elevation: 5.0, // This adds a shadow to the AppBar
+          elevation: 5.0,
           shadowColor: Colors.grey,
         ),
         drawer: const DrawerHcp(),
@@ -46,13 +51,14 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
               const SizedBox(
                 height: 30,
               ),
+              // Add a button to select a date
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                     side: const BorderSide(
-                        color: Colors.blue), // Added blue border
+                        color: Colors.blue),
                   ),
                 ),
                 onPressed: () async {
@@ -73,11 +79,13 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                 child: const Text(AppStrings.selectDate),
               ),
               const SizedBox(height: 50),
+              // Display the appointments
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                     stream: filteredData,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
+                        // Display a loading indicator while fetching the data
                         return const Center(
                           child: CircularProgressIndicator(
                             valueColor:
@@ -86,13 +94,16 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                         );
                       } else if (!snapshot.hasData ||
                           (snapshot.data as QuerySnapshot).docs.isEmpty) {
+                            // Display a message if no appointments are found
                         return const Text(AppStrings.noAppointmentsFound,
                             style: TextStyle(color: Colors.blue, fontSize: 30));
                       } else if (snapshot.hasError) {
+                        // Display the error message
                         return Text('${AppStrings.error} ${snapshot.error}',
                             style: const TextStyle(
                                 color: Colors.blue, fontSize: 30));
                       } else {
+                        // Display the appointments
                         final QuerySnapshot querySnapshot =
                             snapshot.data as QuerySnapshot;
                         return ListView.builder(
@@ -105,11 +116,12 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                             return Padding(
                               padding: const EdgeInsets.all(15.0),
                               child: Container(
-                                width: 500, // Changed width to 800
+                                width: 500,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.black),
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
+                                // Display the appointment details
                                 child: ListTile(
                                   title: StreamBuilder<DocumentSnapshot>(
                                       stream: database.getPatientByUid(
@@ -145,6 +157,7 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                                           '${AppStrings.colonpaymentStatus}  ${documentSnapshot[AppStrings.paymentStatus]}'),
                                     ],
                                   ),
+                                  // Add buttons to view, edit, and delete the appointment
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -202,6 +215,7 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                       }
                     }),
               ),
+              // Add a button to add a new appointment
               MyButton(
                   text: AppStrings.addAppointment,
                   onTap: () {
@@ -215,6 +229,7 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
   }
 }
 
+// Display the payment dialog
 void _viewPaymentDialog(
     BuildContext context, String appointmentId, String paymentStatus) {
   showDialog(

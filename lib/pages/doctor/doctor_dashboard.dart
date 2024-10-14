@@ -5,6 +5,7 @@ import 'package:lanka_health_care/components/drawers/drawer_doctor.dart';
 import 'package:lanka_health_care/services/database.dart';
 import 'package:lanka_health_care/shared/constants.dart';
 
+// Main class for the Doctor Dashboard
 class DoctorDashboard extends StatelessWidget {
   const DoctorDashboard({super.key});
 
@@ -16,8 +17,8 @@ class DoctorDashboard extends StatelessWidget {
       appBar: AppBar(
         title: const Text(AppStrings.docDashBoard),
         backgroundColor: Colors.white,
-        elevation: 5.0, // This adds a shadow to the AppBar
-        shadowColor: Colors.grey, // This sets the color of the shadow
+        elevation: 5.0,
+        shadowColor: Colors.grey,
       ),
       drawer: const DrawerDoctor(),
       body: Center(
@@ -31,6 +32,7 @@ class DoctorDashboard extends StatelessWidget {
                   AppStrings.appointmentstoday,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
+                // StreamBuilder to fetch and display today's appointments
                 StreamBuilder(
                     stream: database.getAppointmentsByDoctorUidAndDate(
                         FirebaseAuth.instance.currentUser!.uid,
@@ -46,6 +48,7 @@ class DoctorDashboard extends StatelessWidget {
                           Text(
                               '${AppStrings.totalAppointments} ${snapshot.data!.docs.length}'),
                           const SizedBox(height: 10),
+                          // Display each appointment
                           ...snapshot.data!.docs
                               .map<Widget>((documentSnapshot) {
                             return Column(
@@ -70,6 +73,7 @@ class DoctorDashboard extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      // StreamBuilder to fetch and display patient details
                                       StreamBuilder<DocumentSnapshot>(
                                           stream: database.getPatientByUid(
                                               documentSnapshot[
@@ -97,6 +101,7 @@ class DoctorDashboard extends StatelessWidget {
                                                           FontWeight.bold));
                                             }
                                           }),
+                                      // Display appointment details
                                       Text(
                                           '${AppStrings.colondate} ${documentSnapshot[AppStrings.date]} ${AppStrings.colontime} ${documentSnapshot[AppStrings.time]}'),
                                       Text(
@@ -125,6 +130,7 @@ class DoctorDashboard extends StatelessWidget {
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 10),
+                    // StreamBuilder to fetch and display doctor's availability
                     StreamBuilder(
                         stream: database.getAvailability(
                             FirebaseAuth.instance.currentUser!.uid),
@@ -144,6 +150,7 @@ class DoctorDashboard extends StatelessWidget {
                                 color: Colors.black,
                                 thickness: 1,
                               ),
+                              // Display each availability slot
                               ...snapshot.data!.docs
                                   .map<Widget>((documentSnapshot) {
                                 return Column(

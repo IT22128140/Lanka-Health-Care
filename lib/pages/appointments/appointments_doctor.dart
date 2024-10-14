@@ -14,11 +14,15 @@ class AppointmentsDoctor extends Appointments {
 }
 
 class _AppointmentsDoctorState extends State<AppointmentsDoctor> {
+  // Initialize the database service and the current user
   final DatabaseService database = DatabaseService();
   final User user = FirebaseAuth.instance.currentUser!;
   late Stream<QuerySnapshot<Object?>> filteredData;
+
+  // Get the appointments for the doctor for the current date
   @override
   void initState() {
+    // Get the appointments for the doctor for the current date
     filteredData = database.getAppointmentsByDoctorUidAndDate(user.uid,
         "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, AppStrings.zero)}-${DateTime.now().day.toString().padLeft(2, AppStrings.zero)}");
     super.initState();
@@ -28,12 +32,13 @@ class _AppointmentsDoctorState extends State<AppointmentsDoctor> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          // Add the app bar
           title: const Text(AppStrings.appointmentsDoctor),
           backgroundColor: Colors.white,
-          elevation: 5.0, // This adds a shadow to the AppBar
+          elevation: 5.0,
           shadowColor: Colors.grey,
         ),
-        drawer: const DrawerDoctor(),
+        drawer: const DrawerDoctor(), // Add the doctor drawer
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -41,6 +46,7 @@ class _AppointmentsDoctorState extends State<AppointmentsDoctor> {
               const SizedBox(
                 height: 30,
               ),
+              // Add a button to select a date
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
@@ -51,6 +57,7 @@ class _AppointmentsDoctorState extends State<AppointmentsDoctor> {
                   ),
                 ),
                 onPressed: () async {
+                  // Show the date picker dialog
                   DateTime? selectedDate = await showDatePicker(
                     context: context,
                     initialDate: DateTime.now(),
@@ -69,11 +76,13 @@ class _AppointmentsDoctorState extends State<AppointmentsDoctor> {
                     style: TextStyle(color: Colors.blue)),
               ),
               const SizedBox(height: 50),
+              // StreamBuilder to fetch and display the appointments
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                     stream: filteredData,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
+                        // Show a loading indicator
                         return const Center(
                           child: CircularProgressIndicator(
                             valueColor:
@@ -82,13 +91,16 @@ class _AppointmentsDoctorState extends State<AppointmentsDoctor> {
                         );
                       } else if (!snapshot.hasData ||
                           (snapshot.data as QuerySnapshot).docs.isEmpty) {
+                        // Show a message if no appointments are found
                         return const Text(AppStrings.noAppointmentsFound,
                             style: TextStyle(color: Colors.blue, fontSize: 30));
                       } else if (snapshot.hasError) {
+                        // Show an error message if an error occurs
                         return Text('Error: ${snapshot.error}',
                             style: const TextStyle(
                                 color: Colors.blue, fontSize: 30));
                       } else {
+                        // Display the appointments
                         final QuerySnapshot querySnapshot =
                             snapshot.data as QuerySnapshot;
                         return ListView.builder(
@@ -111,12 +123,14 @@ class _AppointmentsDoctorState extends State<AppointmentsDoctor> {
                                   ),
                                 ],
                               ),
+                              // Display the appointment details
                               child: ListTile(
                                 title: StreamBuilder<DocumentSnapshot>(
                                     stream: database.getPatientByUid(
                                         documentSnapshot[
                                             AppStrings.patientUid]),
                                     builder: (context, snapshot) {
+                                      // Display the patient name
                                       if (snapshot.connectionState ==
                                           ConnectionState.waiting) {
                                         return const Text(AppStrings.loading);
@@ -131,24 +145,27 @@ class _AppointmentsDoctorState extends State<AppointmentsDoctor> {
                                         final DocumentSnapshot querySnapshot =
                                             snapshot.data!;
                                         return Text(
-                                            '${AppStrings.patientcolon} ${querySnapshot[AppStrings.patientfirstName]} ${querySnapshot[AppStrings.patientlastName]}');
+                                            '${AppStrings.patientcolon} ${querySnapshot[AppStrings.patientfirstName]} ${querySnapshot[AppStrings.patientlastName]}'); // Display the patient name
                                       }
                                     }),
+                                // Display the appointment details
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                        '${AppStrings.colondate} ${documentSnapshot[AppStrings.date]} ${AppStrings.colontime} ${documentSnapshot[AppStrings.time]}'),
+                                        '${AppStrings.colondate} ${documentSnapshot[AppStrings.date]} ${AppStrings.colontime} ${documentSnapshot[AppStrings.time]}'), // Display the date and time of the appointment
                                     Text(
-                                        '${AppStrings.colonstatus} ${documentSnapshot[AppStrings.status]}'),
+                                        '${AppStrings.colonstatus} ${documentSnapshot[AppStrings.status]}'), // Display the status of the appointment
                                     Text(
-                                        '${AppStrings.colonpaymentStatus} ${documentSnapshot[AppStrings.paymentStatus]}'),
+                                        '${AppStrings.colonpaymentStatus} ${documentSnapshot[AppStrings.paymentStatus]}'), // Display the payment status of the appointment
                                   ],
                                 ),
+                                // Add buttons to view, complete, or cancel the appointment
                                 trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     IconButton(
+                                        // Add a button to view the patient details
                                         onPressed: () {
                                           Navigator.pushNamed(
                                               context, '/patientDetails',
@@ -157,6 +174,7 @@ class _AppointmentsDoctorState extends State<AppointmentsDoctor> {
                                         },
                                         icon: const Icon(Icons.visibility)),
                                     IconButton(
+                                        // Add a button to complete the appointment
                                         onPressed: () {
                                           database.updateAppointmentStatus(
                                               documentSnapshot.id,
@@ -164,6 +182,7 @@ class _AppointmentsDoctorState extends State<AppointmentsDoctor> {
                                         },
                                         icon: const Icon(Icons.check)),
                                     IconButton(
+                                      // Add a button to cancel the appointment
                                       onPressed: () {
                                         database.updateAppointmentStatus(
                                             documentSnapshot.id,

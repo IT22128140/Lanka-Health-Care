@@ -26,6 +26,7 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
   @override
   void initState() {
     super.initState();
+    // Initialize localPaymentStatus with the value passed from the parent widget
     localPaymentStatus = widget.paymentStatus;
   }
 
@@ -34,14 +35,18 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
     return AlertDialog(
       title: const Text(AppStrings.viewPayment),
       content: SizedBox(
-        height: 400, // Adjust the height as needed
-        width: 300, // Adjust the width as needed
+        height: 400,
+        width: 300,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Dropdown to select payment status
             DropdownButton<String>(
-              items: <String>[AppStrings.recurring, AppStrings.completed, AppStrings.pending]
-                  .map((String value) {
+              items: <String>[
+                AppStrings.recurring,
+                AppStrings.completed,
+                AppStrings.pending
+              ].map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
@@ -51,12 +56,14 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
                 setState(() {
                   localPaymentStatus = newValue!;
                 });
+                // Update payment status in the database
                 database.updateAppointmentPaymentStatus(
                     widget.appointmentId, localPaymentStatus);
               },
               value: localPaymentStatus,
             ),
             Expanded(
+              // StreamBuilder to fetch and display payment details
               child: StreamBuilder<QuerySnapshot>(
                 stream:
                     database.getPaymentByAppointmentId(widget.appointmentId),
@@ -77,11 +84,16 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('${AppStrings.colonbankName} ${payment.bankName}'),
-                            Text('${AppStrings.colonaccountNumber} ${payment.accountNumber}'),
-                            Text('${AppStrings.colonaccountName} ${payment.accountName}'),
+                            // Display payment details
+                            Text(
+                                '${AppStrings.colonbankName} ${payment.bankName}'),
+                            Text(
+                                '${AppStrings.colonaccountNumber} ${payment.accountNumber}'),
+                            Text(
+                                '${AppStrings.colonaccountName} ${payment.accountName}'),
                             Text('${AppStrings.colonamount} ${payment.amount}'),
                             Text('${AppStrings.colondate} ${payment.date}'),
+                            // Display deposit slip image
                             Image.network(
                               payment.depositSlip,
                               width: 100,
@@ -100,8 +112,7 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
                                               ? loadingProgress
                                                       .cumulativeBytesLoaded /
                                                   (loadingProgress
-                                                          .expectedTotalBytes ??
-                                                      1)
+                                                          .expectedTotalBytes ?? 1)
                                               : null,
                                     ),
                                   );
@@ -109,8 +120,10 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
                               },
                               errorBuilder: (BuildContext context, Object error,
                                   StackTrace? stackTrace) {
-                                debugPrint('${AppStrings.errLoadingImage} $error');
-                                debugPrint('${AppStrings.stackTrace} $stackTrace');
+                                debugPrint(
+                                    '${AppStrings.errLoadingImage} $error');
+                                debugPrint(
+                                    '${AppStrings.stackTrace} $stackTrace');
                                 return const Column(
                                   children: [
                                     Icon(
@@ -126,6 +139,7 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
                                 );
                               },
                             ),
+                            // Button to edit payment details
                             TextButton(
                               onPressed: () {
                                 EditPaymentDialog().show(context,
@@ -145,6 +159,7 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
         ),
       ),
       actions: <Widget>[
+        // Button to delete payment
         TextButton(
           onPressed: () {
             database.deletePayment(widget.appointmentId, paymentId);
@@ -153,12 +168,14 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
           },
           child: const Text(AppStrings.deleteButton),
         ),
+        // Button to add new payment
         TextButton(
           onPressed: () {
             AddPaymentDialog().show(context, widget.appointmentId);
           },
           child: const Text(AppStrings.addPayment),
         ),
+        // Button to close the dialog
         TextButton(
           onPressed: () {
             if (Navigator.of(context).canPop()) {

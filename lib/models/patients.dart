@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class Patients {
+  //Patients class fields
   final String firstName;
   final String lastName;
   final DateTime dob;
   final String phone;
   final String gender;
 
+  //Constructs a Patient object and performs validation on the provided data
   Patients(
       {required this.firstName,
       required this.lastName,
@@ -18,40 +21,50 @@ class Patients {
 
   void _validate() {
     if (firstName.isEmpty) {
-      throw ArgumentError('First name cannot be empty');
+      throw ArgumentError(
+          AppStrings.firstnameEmpty); //Checks if the firstname is empty
     }
     if (lastName.isEmpty) {
-      throw ArgumentError('Last name cannot be empty');
+      throw ArgumentError(
+          AppStrings.lastnameEmpty); //Checks if the lastname is empty
     }
     if (dob.isAfter(DateTime.now())) {
-      throw ArgumentError('Date of birth cannot be in the future');
+      throw ArgumentError(
+          AppStrings.dobNotFuture); //Checks if date of birth is in the future
     }
     if (!RegExp(r'^\+?[0-9]{10,15}$').hasMatch(phone)) {
-      throw ArgumentError('Invalid phone number');
+      throw ArgumentError(
+          AppStrings.phoneInvalid); //Checks if phone number is invalid
     }
-    if (gender.isEmpty || !(gender == 'Male' || gender == 'Female' || gender == 'Other')) {
-      throw ArgumentError('Invalid gender');
+    if (gender.isEmpty ||
+        !(gender == AppStrings.male ||
+            gender == AppStrings.female ||
+            gender == AppStrings.other)) {
+      throw ArgumentError(
+          AppStrings.genderInvalid); //Checks if gender is invalid
     }
   }
 
+  //Method to convert the Patients instance to a Map, suitable for Firestore storage
   Map<String, dynamic> toMap() {
     return {
-      'firstName': firstName,
-      'lastName': lastName,
-      'dob': dob,
-      'phone': phone,
-      'gender': gender,
+      AppStrings.patientfirstName: firstName,
+      AppStrings.patientlastName: lastName,
+      AppStrings.patientdob: dob,
+      AppStrings.patientPhone: phone,
+      AppStrings.patientGender: gender,
     };
   }
 
+  // Factory method to create a Patients object from Firestore DocumentSnapshot
   factory Patients.fromSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
     return Patients(
-      firstName: data['firstName'],
-      lastName: data['lastName'],
-      dob: (data['dob'] as Timestamp).toDate(),
-      phone: data['phone'],
-      gender: data['gender'],
+      firstName: data[AppStrings.patientfirstName],
+      lastName: data[AppStrings.patientlastName],
+      dob: (data[AppStrings.patientdob] as Timestamp).toDate(),
+      phone: data[AppStrings.patientPhone],
+      gender: data[AppStrings.patientGender],
     );
   }
 }

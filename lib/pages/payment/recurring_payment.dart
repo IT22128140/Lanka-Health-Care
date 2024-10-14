@@ -15,10 +15,13 @@ class RecurringPayment extends Appointments {
 }
 
 class _RecurrinfPaymentState extends State<RecurringPayment> {
+  // Initialize the database service, user and filtered data
   final DatabaseService database = DatabaseService();
   final User user = FirebaseAuth.instance.currentUser!;
+  // Stream of query snapshot
   late Stream<QuerySnapshot<Object?>> filteredData;
 
+// Initialize the filtered data with appointments with recurring payment
   @override
   void initState() {
     filteredData = database.getAppointmentsWithRecurringPayment();
@@ -30,22 +33,26 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Scaffold with app bar, drawer and body
         appBar: AppBar(
           title: const Text(AppStrings.recurrPayment),
           backgroundColor: Colors.white,
-          elevation: 5.0, // This adds a shadow to the AppBar
+          elevation: 5.0,
           shadowColor: Colors.grey,
         ),
+        // Drawer for the healthcare provider
         drawer: const DrawerHcp(),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 50),
+              // Stream builder for the filtered data
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                     stream: filteredData,
                     builder: (context, snapshot) {
+                      // Check the connection state
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
                           child: CircularProgressIndicator(
@@ -53,15 +60,18 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
                                 AlwaysStoppedAnimation<Color>(Colors.blue),
                           ),
                         );
+                        // Check if there are no appointments
                       } else if (!snapshot.hasData ||
                           (snapshot.data as QuerySnapshot).docs.isEmpty) {
                         return const Text(AppStrings.noAppointmentsFound,
                             style: TextStyle(color: Colors.blue, fontSize: 30));
                       } else if (snapshot.hasError) {
+                        // Check if there is an error
                         return Text('${AppStrings.error} ${snapshot.error}',
                             style: const TextStyle(
                                 color: Colors.blue, fontSize: 30));
                       } else {
+                        // Return the list view of appointments
                         final QuerySnapshot querySnapshot =
                             snapshot.data as QuerySnapshot;
                         return ListView.builder(
@@ -69,7 +79,8 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
                           itemBuilder: (context, index) {
                             final DocumentSnapshot documentSnapshot =
                                 querySnapshot.docs[index];
-                            paymentStatus = documentSnapshot[AppStrings.paymentStatus];
+                            paymentStatus =
+                                documentSnapshot[AppStrings.paymentStatus];
                             return Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: Container(
@@ -80,25 +91,31 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
                                 child: ListTile(
                                   title: StreamBuilder<DocumentSnapshot>(
                                       stream: database.getPatientByUid(
-                                          documentSnapshot[AppStrings.patientUid]),
+                                          documentSnapshot[
+                                              AppStrings.patientUid]),
                                       builder: (context, snapshot) {
+                                        // Check the connection state
                                         if (snapshot.connectionState ==
                                             ConnectionState.waiting) {
                                           return const Text(AppStrings.loading);
                                         } else if (snapshot.hasError) {
+                                          // Check if there is an error
                                           return Text(
                                               '${AppStrings.error} ${snapshot.error}');
                                         } else if (!snapshot.hasData ||
                                             !snapshot.data!.exists) {
+                                          // Check if the patient is not found
                                           return const Text(
                                               AppStrings.patientNotFound);
                                         } else {
+                                          // Return the patient name
                                           final DocumentSnapshot querySnapshot =
                                               snapshot.data!;
                                           return Text(
                                               '${AppStrings.patientcolon} ${querySnapshot[AppStrings.patientfirstName]} ${querySnapshot[AppStrings.patientlastName]}');
                                         }
                                       }),
+                                      // Subtitle with date, time, status and payment status
                                   subtitle: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -111,6 +128,7 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
                                           '${AppStrings.colonpaymentStatus} ${documentSnapshot[AppStrings.paymentStatus]}'),
                                     ],
                                   ),
+                                  // Trailing icons for payment, view, complete, cancel, pending and delete
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -147,7 +165,8 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
                                       IconButton(
                                           onPressed: () {
                                             database.updateAppointmentStatus(
-                                                documentSnapshot.id, AppStrings.pending);
+                                                documentSnapshot.id,
+                                                AppStrings.pending);
                                           },
                                           icon: const Icon(
                                               Icons.pending_actions)),
@@ -173,6 +192,7 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
   }
 }
 
+// View payment dialog
 void _viewPaymentDialog(
     BuildContext context, String appointmentId, String paymentStatus) {
   showDialog(
