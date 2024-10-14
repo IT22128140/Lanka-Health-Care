@@ -5,6 +5,7 @@ import 'package:lanka_health_care/components/drawers/drawer_HCP.dart';
 import 'package:lanka_health_care/pages/appointments/appointments.dart';
 import 'package:lanka_health_care/services/database.dart';
 import 'package:lanka_health_care/pages/payment/show_payment.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class RecurringPayment extends Appointments {
   const RecurringPayment({super.key});
@@ -30,7 +31,7 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Recurring Payments'),
+          title: const Text(AppStrings.recurrPayment),
           backgroundColor: Colors.white,
           elevation: 5.0, // This adds a shadow to the AppBar
           shadowColor: Colors.grey,
@@ -54,10 +55,10 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
                         );
                       } else if (!snapshot.hasData ||
                           (snapshot.data as QuerySnapshot).docs.isEmpty) {
-                        return const Text('No Appointments found',
+                        return const Text(AppStrings.noAppointmentsFound,
                             style: TextStyle(color: Colors.blue, fontSize: 30));
                       } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}',
+                        return Text('${AppStrings.error} ${snapshot.error}',
                             style: const TextStyle(
                                 color: Colors.blue, fontSize: 30));
                       } else {
@@ -68,7 +69,7 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
                           itemBuilder: (context, index) {
                             final DocumentSnapshot documentSnapshot =
                                 querySnapshot.docs[index];
-                            paymentStatus = documentSnapshot['paymentStatus'];
+                            paymentStatus = documentSnapshot[AppStrings.paymentStatus];
                             return Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: Container(
@@ -79,23 +80,23 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
                                 child: ListTile(
                                   title: StreamBuilder<DocumentSnapshot>(
                                       stream: database.getPatientByUid(
-                                          documentSnapshot['patientuid']),
+                                          documentSnapshot[AppStrings.patientUid]),
                                       builder: (context, snapshot) {
                                         if (snapshot.connectionState ==
                                             ConnectionState.waiting) {
-                                          return const Text('Loading...');
+                                          return const Text(AppStrings.loading);
                                         } else if (snapshot.hasError) {
                                           return Text(
-                                              'Error: ${snapshot.error}');
+                                              '${AppStrings.error} ${snapshot.error}');
                                         } else if (!snapshot.hasData ||
                                             !snapshot.data!.exists) {
                                           return const Text(
-                                              'Patient not found');
+                                              AppStrings.patientNotFound);
                                         } else {
                                           final DocumentSnapshot querySnapshot =
                                               snapshot.data!;
                                           return Text(
-                                              'Patient: ${querySnapshot['firstName']} ${querySnapshot['lastName']}');
+                                              '${AppStrings.patientcolon} ${querySnapshot[AppStrings.patientfirstName]} ${querySnapshot[AppStrings.patientlastName]}');
                                         }
                                       }),
                                   subtitle: Column(
@@ -103,11 +104,11 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                          'Date: ${documentSnapshot['date']} Time: ${documentSnapshot['time']}'),
+                                          '${AppStrings.colondate} ${documentSnapshot[AppStrings.date]} ${AppStrings.colontime} ${documentSnapshot[AppStrings.time]}'),
                                       Text(
-                                          'Status: ${documentSnapshot['status']}'),
+                                          '${AppStrings.colonstatus} ${documentSnapshot[AppStrings.status]}'),
                                       Text(
-                                          'Payment Status: ${documentSnapshot['paymentStatus']}'),
+                                          '${AppStrings.colonpaymentStatus} ${documentSnapshot[AppStrings.paymentStatus]}'),
                                     ],
                                   ),
                                   trailing: Row(
@@ -126,27 +127,27 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
                                             Navigator.pushNamed(
                                                 context, '/patientDetails',
                                                 arguments: documentSnapshot[
-                                                    'patientuid']);
+                                                    AppStrings.patientUid]);
                                           },
                                           icon: const Icon(Icons.visibility)),
                                       IconButton(
                                           onPressed: () {
                                             database.updateAppointmentStatus(
                                                 documentSnapshot.id,
-                                                'Completed');
+                                                AppStrings.completed);
                                           },
                                           icon: const Icon(Icons.check)),
                                       IconButton(
                                           onPressed: () {
                                             database.updateAppointmentStatus(
                                                 documentSnapshot.id,
-                                                'Cancelled');
+                                                AppStrings.cancelled);
                                           },
                                           icon: const Icon(Icons.cancel)),
                                       IconButton(
                                           onPressed: () {
                                             database.updateAppointmentStatus(
-                                                documentSnapshot.id, 'Pending');
+                                                documentSnapshot.id, AppStrings.pending);
                                           },
                                           icon: const Icon(
                                               Icons.pending_actions)),

@@ -216,4 +216,17 @@ class AppStrings {
   static const String healthCareProDashBoard = 'Healthcare Provider Dashboard';
   static const String recurringpayment = 'Recurring Payment';
   static const String downloadQRCode = 'Download QR Code';
+  static const String addPayment = 'Add Payment';
+  static const String editPayment = 'Edit Payment';
+  static const String recurrPayment = 'Recurring Payments';
+  static const String viewPayment = 'View Payment';
+  static const String noPaymentFound = 'No Payment Found';
+  static const String colonbankName = 'Bank Name: ';
+  static const String colonaccountNumber = 'Account Number: ';
+  static const String colonaccountName = 'Account Name: ';
+  static const String colonamount = 'Amount: ';
+  static const String errLoadingImage = 'Error loading image:';
+  static const String stackTrace = 'Stack trace:';
+  static const String failedLoadImage = 'Failed to load image';
+  static const String close = 'Close';
 }

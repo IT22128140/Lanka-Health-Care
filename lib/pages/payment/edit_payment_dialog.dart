@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker_web/image_picker_web.dart';
 import 'package:lanka_health_care/models/payment.dart';
 import 'package:lanka_health_care/services/database.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class EditPaymentDialog {
   final DatabaseService database = DatabaseService();
@@ -24,25 +25,25 @@ class EditPaymentDialog {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text('Edit Payment'),
+              title: const Text(AppStrings.editPayment),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   TextField(
                     controller: bankNameController,
-                    decoration: const InputDecoration(labelText: 'Bank Name'),
+                    decoration: const InputDecoration(labelText: AppStrings.bankName),
                   ),
                   TextField(
                     controller: accountNumberController,
-                    decoration: const InputDecoration(labelText: 'Account Number'),
+                    decoration: const InputDecoration(labelText: AppStrings.accountNumber),
                   ),
                   TextField(
                     controller: accountNameController,
-                    decoration: const InputDecoration(labelText: 'Account Name'),
+                    decoration: const InputDecoration(labelText: AppStrings.accountName),
                   ),
                   TextField(
                     controller: amountController,
-                    decoration: const InputDecoration(labelText: 'Amount'),
+                    decoration: const InputDecoration(labelText: AppStrings.amount),
                   ),
                   ElevatedButton(
                     onPressed: () async {
@@ -61,7 +62,7 @@ class EditPaymentDialog {
                   ),
                   if (!isImageSelected)
                     const Text(
-                      'Upload slip',
+                      AppStrings.uploadSlip,
                       style: TextStyle(color: Color.fromARGB(255, 250, 230, 35)),
                     ),
                 ],
@@ -73,7 +74,7 @@ class EditPaymentDialog {
                       Navigator.of(context).pop();
                     }
                   },
-                  child: const Text('Cancel'),
+                  child: const Text(AppStrings.cancelButton),
                 ),
                 TextButton(
                   onPressed: isUploading
@@ -84,14 +85,14 @@ class EditPaymentDialog {
                           });
                           String uniqueName = DateTime.now().millisecondsSinceEpoch.toString();
                           Reference refImages = FirebaseStorage.instance.ref();
-                          Reference refImagesDir = refImages.child('slip_images');
-                          Reference referenceImageToUpload = refImagesDir.child('$uniqueName.jpg');
+                          Reference refImagesDir = refImages.child(AppStrings.slipImages);
+                          Reference referenceImageToUpload = refImagesDir.child('$uniqueName${AppStrings.jpg}');
                           try {
                             await referenceImageToUpload.putData(image);
                             String downloadUrl = await referenceImageToUpload.getDownloadURL();
                             depositSlipController.text = downloadUrl;
                           } catch (e) {
-                            debugPrint('Error uploading image: $e');
+                            debugPrint('${AppStrings.erroUploadingImage} $e');
                           }
                           if (Navigator.of(context).canPop()) {
                             await database.editPayment(
@@ -112,7 +113,7 @@ class EditPaymentDialog {
                             isUploading = false;
                           });
                         },
-                  child: const Text('Edit'),
+                  child: const Text(AppStrings.editButton),
                 ),
               ],
             );
