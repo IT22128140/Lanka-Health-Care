@@ -4,6 +4,7 @@ import 'package:lanka_health_care/helper/helper_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lanka_health_care/services/database.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class LoginPage extends StatefulWidget {
   final void Function()? onTap;
@@ -47,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
         //pop the loading circle
         Navigator.pop(context);
         //display error message
-        displayMessageToUser('User not found', context);
+        displayMessageToUser(AppStrings.userNotFound, context);
       } else {
         //sign in the user
         await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -62,18 +63,18 @@ class _LoginPageState extends State<LoginPage> {
 
         //verify user type
         String userType = userTypeController.text;
-        if (userType == 'doctor') {
+        if (userType == AppStrings.doctor) {
           //navigate to doctor dashboard
           Navigator.pushNamed(context, '/doctorDashboard');
-        } else if (userType == 'healthcaremanager') {
+        } else if (userType == AppStrings.healthcaremanager) {
           //navigate to healthcare manager dashboard
           Navigator.pushNamed(context, '/healthcareManagerDashboard');
-        } else if (userType == 'healthcareprovider') {
+        } else if (userType == AppStrings.healthcareprovider) {
           //navigate to healthcare provider dashboard
           Navigator.pushNamed(context, '/healthcareProviderDashboard');
         } else {
           //display error if user type is not selected
-          displayMessageToUser('Please select a valid user type', context);
+          displayMessageToUser(AppStrings.notvalidusertype, context);
         }
       }
     } catch (e) {
@@ -94,14 +95,14 @@ class _LoginPageState extends State<LoginPage> {
       try {
         await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
         //Display success message
-        displayMessageToUser('Registration success', context);
+        displayMessageToUser(AppStrings.regsuccess, context);
       } on FirebaseAuthException catch (e) {
         //Display error message
         displayMessageToUser(e.code, context);
       }
     } else {
       //Display error if email is empty
-      displayMessageToUser('Error email empty', context);
+      displayMessageToUser(AppStrings.emptyEmail, context);
     }
   }
 
@@ -122,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 30),
               //sign in text
               const Text(
-                'Sign In',
+                AppStrings.signin,
                 style: TextStyle(
                   fontSize: 40,
                   color: Colors.black,
@@ -143,15 +144,15 @@ class _LoginPageState extends State<LoginPage> {
                       filled: true,
                       fillColor: Colors.white,
                     ),
-                    hint: const Text('Select User Type'),
+                    hint: const Text(AppStrings.usertypeselection),
                     items: const [
-                      DropdownMenuItem(value: 'doctor', child: Text('Doctor')),
+                      DropdownMenuItem(value: AppStrings.doctor, child: Text(AppStrings.doctorLabel)),
                       DropdownMenuItem(
-                          value: 'healthcaremanager',
-                          child: Text('Healthcare Manager')),
+                          value: AppStrings.healthcaremanager,
+                          child: Text(AppStrings.healthCareManagerLabel)),
                       DropdownMenuItem(
-                          value: 'healthcareprovider',
-                          child: Text('Healthcare Provider')),
+                          value: AppStrings.healthcareprovider,
+                          child: Text(AppStrings.healthCareProviderLabel)),
                     ],
                     onChanged: (value) {
                       userTypeController.text = value.toString();
@@ -162,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
 
               //email textfield
               MyTextField(
-                hintText: 'Email',
+                hintText: AppStrings.loginEmail,
                 obscureText: false,
                 controller: emailController,
                 width: 500,
@@ -172,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
 
               //password textfield
               MyTextField(
-                hintText: 'Password',
+                hintText: AppStrings.loginPassword,
                 obscureText: true,
                 controller: passwordController,
                 width: 500,
@@ -184,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
               GestureDetector(
                 onTap: forgotPassword,
                 child: const Text(
-                  'Forgot Password?',
+                  AppStrings.forgotPassword,
                   style: TextStyle(color: Colors.black, fontSize: 18),
                 ),
               ),
@@ -193,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
 
               //sign in button
               MyButton(
-                text: 'Sign In',
+                text: AppStrings.signin,
                 onTap: login,
                 width: 500,
               ),
@@ -204,12 +205,12 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Don\'t have an account? ',
+                  const Text(AppStrings.noacc,
                       style: TextStyle(color: Colors.black, fontSize: 18)),
                   GestureDetector(
                     onTap: widget.onTap,
                     child: const Text(
-                      'Sign Up',
+                      AppStrings.signup,
                       style: TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.bold,

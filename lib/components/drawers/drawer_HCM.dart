@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lanka_health_care/components/drawers/drawer_custom.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class DrawerHcm extends DrawerCustom {
   const DrawerHcm({super.key});
 
   @override
-  String get title => 'Healthcare Manager Dashboard';
+  String get title => AppStrings.healthCareManDashBoard;
 
   @override
   Future<void> signOut(BuildContext context) async {
@@ -24,7 +25,7 @@ class DrawerHcm extends DrawerCustom {
               color: Colors.blue,
             ),
             child: Center(
-              child: Text('Health Care Manager Dashboard',
+              child: Text(AppStrings.healthCareManDashBoard,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -36,7 +37,7 @@ class DrawerHcm extends DrawerCustom {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 ListTile(
-                  title: const Text('Health Care Manager Dashboard'),
+                  title: const Text(AppStrings.healthCareManDashBoard),
                   onTap: () {
                     Navigator.pushNamed(context, '/hcmDashboard');
                   },
@@ -48,7 +49,7 @@ class DrawerHcm extends DrawerCustom {
             padding: const EdgeInsets.all(30),
             child: ListTile(
               leading: const Icon(Icons.exit_to_app),
-              title: const Text('Sign Out'),
+              title: const Text(AppStrings.signout),
               onTap: () async {
                 await signOut(context);
               },
