@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lanka_health_care/components/drawers/drawer_custom.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class DrawerDoctor extends DrawerCustom {
   const DrawerDoctor({Key? key}) : super(key: key);
 
   @override
-  String get title => 'Doctor Dashboard';
+  String get title => AppStrings.docDashBoard;
 
   @override
   Future<void> signOut(BuildContext context) async {
@@ -24,7 +25,7 @@ class DrawerDoctor extends DrawerCustom {
               color: Colors.blue,
             ),
             child: Center(
-              child: Text('Doctor Dashboard',
+              child: Text(AppStrings.docDashBoard,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -36,25 +37,25 @@ class DrawerDoctor extends DrawerCustom {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 ListTile(
-                  title: const Text('Doctor Dashboard'),
+                  title: const Text(AppStrings.docDashBoard),
                   onTap: () {
                     Navigator.pushNamed(context, '/doctorDashboard');
                   },
                 ),
                 ListTile(
-                  title: const Text('Manage availability'),
+                  title: const Text(AppStrings.manageavailability),
                   onTap: () {
                     Navigator.pushNamed(context, '/manageAvailability');
                   },
                 ),
                 ListTile(
-                  title: const Text('Patients'),
+                  title: const Text(AppStrings.patients),
                   onTap: () {
                     Navigator.pushNamed(context, '/patients');
                   },
                 ),
                 ListTile(
-                  title: const Text('Appointments'),
+                  title: const Text(AppStrings.appointments),
                   onTap: () {
                     Navigator.pushNamed(context, '/appointmentsDoctor');
                   },
@@ -66,7 +67,7 @@ class DrawerDoctor extends DrawerCustom {
             padding: const EdgeInsets.all(30),
             child: ListTile(
               leading: const Icon(Icons.exit_to_app),
-              title: const Text('Sign Out'),
+              title: const Text(AppStrings.signout),
               onTap: () async {
                 await signOut(context);
               },

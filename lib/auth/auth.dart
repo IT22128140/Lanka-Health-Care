@@ -5,6 +5,7 @@ import "package:lanka_health_care/pages/doctor/doctor_dashboard.dart";
 import "package:lanka_health_care/pages/healthcareprovider/healthcareprovider_dashboard.dart";
 import "package:lanka_health_care/pages/heathcaremanager/healthcaremanager_dashboard.dart";
 import "package:lanka_health_care/services/database.dart";
+import "package:lanka_health_care/shared/constants.dart";
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -31,11 +32,11 @@ class AuthPage extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasData) {
                   String? userType = snapshot.data;
-                  if (userType == 'doctor') {
+                  if (userType == AppStrings.doctor) {
                     return const DoctorDashboard();
-                  } else if (userType == 'healthcaremanager') {
+                  } else if (userType == AppStrings.healthcaremanager) {
                     return const HealthcaremanagerDashboard();
-                  }else if (userType == 'healthcareprovider') {
+                  }else if (userType == AppStrings.healthcareprovider) {
                     return const HealthcareproviderDashboard();
                   } else
                   {

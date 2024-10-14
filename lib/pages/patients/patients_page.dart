@@ -5,6 +5,7 @@ import 'package:lanka_health_care/models/patients.dart';
 import 'package:lanka_health_care/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class PatientsPage extends StatefulWidget {
   final DrawerCustom drawer;
@@ -27,7 +28,7 @@ class _PatientsState extends State<PatientsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Patients'),
+        title: const Text(AppStrings.patientsDetails),
       ),
       drawer: widget.drawer,
       body: Center(
@@ -46,10 +47,10 @@ class _PatientsState extends State<PatientsPage> {
                         );
                       } else if (!snapshot.hasData ||
                           (snapshot.data as QuerySnapshot).docs.isEmpty) {
-                        return const Text('No patients found',
+                        return const Text(AppStrings.noPatientFound,
                             style: TextStyle(color: Colors.blue, fontSize: 30));
                       } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}',
+                        return Text('${AppStrings.error} ${snapshot.error}',
                             style: const TextStyle(
                                 color: Colors.blue, fontSize: 30));
                       } else {
@@ -63,19 +64,19 @@ class _PatientsState extends State<PatientsPage> {
                                 final patient = patients.docs[index];
                                 final patientId = patients.docs[index].id;
                                 return ListTile(
-                                  title: Text(patient['firstName'] +
+                                  title: Text(patient[AppStrings.patientfirstName] +
                                       ' ' +
-                                      patient['lastName']),
+                                      patient[AppStrings.patientlastName]),
                                   subtitle: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text('Contact: ${patient['phone']}'),
+                                      Text('${AppStrings.contact}: ${patient[AppStrings.patientPhone]}'),
                                       Text(
-                                          'Date of birth: ${DateFormat('yyyy-MM-dd').format(patient['dob'].toDate())}'),
+                                          '${AppStrings.patientDOBLabel}: ${DateFormat('yyyy-MM-dd').format(patient[AppStrings.patientdob].toDate())}'),
                                       Text(
-                                          'Age: ${calculateAge(patient['dob'].toDate())}'),
-                                      Text('Gender: ${patient['gender']}'),
+                                          '${AppStrings.patientAgeLabel}: ${calculateAge(patient[AppStrings.patientdob].toDate())}'),
+                                      Text('${AppStrings.patientGenderLabel}: ${patient[AppStrings.patientGender]}'),
                                     ],
                                   ),
                                   trailing: Row(
@@ -118,19 +119,19 @@ class _PatientsState extends State<PatientsPage> {
                     TextField(
                       controller: firstNameController,
                       decoration: const InputDecoration(
-                        labelText: 'First Name',
+                        labelText: AppStrings.patientFirstNameLabel,
                       ),
                     ),
                     TextField(
                       controller: lastNameController,
                       decoration: const InputDecoration(
-                        labelText: 'Last Name',
+                        labelText: AppStrings.patientLastNameLabel,
                       ),
                     ),
                     TextField(
                       controller: dobController,
                       decoration: const InputDecoration(
-                        labelText: 'Date of Birth',
+                        labelText: AppStrings.patientDOBLabel,
                       ),
                       readOnly: true,
                       onTap: () => showDatePicker(
@@ -148,11 +149,11 @@ class _PatientsState extends State<PatientsPage> {
                     TextField(
                       controller: phoneController,
                       decoration: const InputDecoration(
-                        labelText: 'Phone',
+                        labelText: AppStrings.patientPhoneLabel,
                       ),
                     ),
                     DropdownButtonFormField<String>(
-                      items: ['Male', 'Female'].map((String value) {
+                      items: [AppStrings.male, AppStrings.female].map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -162,11 +163,11 @@ class _PatientsState extends State<PatientsPage> {
                         genderController.text = value ?? '';
                       },
                       decoration: const InputDecoration(
-                        labelText: 'Gender',
+                        labelText: AppStrings.patientGenderLabel,
                       ),
                     ),
                     MyButton(
-                        text: 'Add Patient',
+                        text: AppStrings.addPatientButton,
                         onTap: () => {
                               databaseService.createPatient(Patients(
                                   firstName: firstNameController.text,
@@ -195,44 +196,44 @@ class _PatientsState extends State<PatientsPage> {
 
   void _showEditDialog(BuildContext context, data, dataid) {
     final TextEditingController firstNameController =
-        TextEditingController(text: data['firstName']);
+        TextEditingController(text: data[AppStrings.patientfirstName]);
     final TextEditingController lastNameController =
-        TextEditingController(text: data['lastName']);
+        TextEditingController(text: data[AppStrings.patientlastName]);
     final TextEditingController dobController = TextEditingController(
-        text: DateFormat('yyyy-MM-dd').format(data['dob'].toDate()));
+        text: DateFormat('yyyy-MM-dd').format(data[AppStrings.patientdob].toDate()));
     final TextEditingController phoneController =
-        TextEditingController(text: data['phone']);
+        TextEditingController(text: data[AppStrings.patientPhone]);
     final TextEditingController genderController =
-        TextEditingController(text: data['gender']);
+        TextEditingController(text: data[AppStrings.patientGender]);
 
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Edit Patient'),
+            title: const Text(AppStrings.editPatient),
             content: Column(
               children: [
                 TextField(
                   controller: firstNameController,
                   decoration: const InputDecoration(
-                    labelText: 'First Name',
+                    labelText: AppStrings.patientFirstNameLabel,
                   ),
                 ),
                 TextField(
                   controller: lastNameController,
                   decoration: const InputDecoration(
-                    labelText: 'Last Name',
+                    labelText: AppStrings.patientLastNameLabel,
                   ),
                 ),
                 TextField(
                   controller: dobController,
                   decoration: const InputDecoration(
-                    labelText: 'Date of Birth',
+                    labelText: AppStrings.patientDOBLabel,
                   ),
                   readOnly: true,
                   onTap: () => showDatePicker(
                     context: context,
-                    initialDate: data['dob'].toDate(),
+                    initialDate: data[AppStrings.patientdob].toDate(),
                     firstDate: DateTime(1900),
                     lastDate: DateTime.now(),
                   ).then((value) {
@@ -245,12 +246,12 @@ class _PatientsState extends State<PatientsPage> {
                 TextField(
                   controller: phoneController,
                   decoration: const InputDecoration(
-                    labelText: 'Phone',
+                    labelText: AppStrings.patientPhone,
                   ),
                 ),
                 DropdownButtonFormField<String>(
                   value: genderController.text.isNotEmpty ? genderController.text : null,
-                  items: ['Male', 'Female'].map((String value) {
+                  items: [AppStrings.male, AppStrings.female].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
@@ -260,7 +261,7 @@ class _PatientsState extends State<PatientsPage> {
                   genderController.text = value ?? '';
                   },
                   decoration: const InputDecoration(
-                  labelText: 'Gender',
+                  labelText: AppStrings.patientGenderLabel,
                   ),
                 ),
               ],
@@ -270,7 +271,7 @@ class _PatientsState extends State<PatientsPage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text('Cancel')),
+                  child: const Text(AppStrings.cancelButton)),
               TextButton(
                   onPressed: () {
                     databaseService.editPatient(
@@ -284,7 +285,7 @@ class _PatientsState extends State<PatientsPage> {
                             gender: genderController.text));
                     Navigator.pop(context);
                   },
-                  child: const Text('Save'))
+                  child: const Text(AppStrings.saveButton))
             ],
           );
         });

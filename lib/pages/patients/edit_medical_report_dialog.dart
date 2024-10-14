@@ -1,37 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:lanka_health_care/models/medical_reports.dart';
 import 'package:lanka_health_care/services/database.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class EditMedicalReportDialog {
   static void showEditMedicalReportDialog(
       BuildContext context, String medicalHistoryId, data, String patientId) {
     DatabaseService databaseService = DatabaseService();
     final TextEditingController allergies =
-        TextEditingController(text: data['allergies']);
+        TextEditingController(text: data[AppStrings.allergies]);
     final TextEditingController medications =
-        TextEditingController(text: data['medications']);
+        TextEditingController(text: data[AppStrings.medications]);
     final TextEditingController surgeries =
-        TextEditingController(text: data['surgeries']);
+        TextEditingController(text: data[AppStrings.surgeries]);
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Edit Medical Info'),
+          title: const Text(AppStrings.editMedicalInfoTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               TextField(
                 controller: allergies,
-                decoration: const InputDecoration(labelText: 'Allergies'),
+                decoration: const InputDecoration(labelText: AppStrings.allergiesLabel),
               ),
               TextField(
                 controller: medications,
-                decoration: const InputDecoration(labelText: 'Medications'),
+                decoration: const InputDecoration(labelText: AppStrings.medicationsLabel),
               ),
               TextField(
                 controller: surgeries,
-                decoration: const InputDecoration(labelText: 'Surgeries'),
+                decoration: const InputDecoration(labelText: AppStrings.surgeriesLabel),
               ),
             ],
           ),
@@ -40,7 +41,7 @@ class EditMedicalReportDialog {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: const Text(AppStrings.cancelButton),
             ),
             TextButton(
               onPressed: () {
@@ -54,7 +55,7 @@ class EditMedicalReportDialog {
                     ));
                 Navigator.of(context).pop();
               },
-              child: const Text('Edit'),
+              child: const Text(AppStrings.editButton),
             ),
           ],
         );

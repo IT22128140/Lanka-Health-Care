@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lanka_health_care/components/drawers/drawer_custom.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class DrawerHcp extends DrawerCustom {
   const DrawerHcp({super.key});
 
   @override
-  String get title => 'Healthcare Provider Dashboard';
+  String get title => AppStrings.healthCareProDashBoard;
 
   @override
   Future<void> signOut(BuildContext context) async {
@@ -24,7 +25,7 @@ class DrawerHcp extends DrawerCustom {
               color: Colors.blue,
             ),
             child: Center(
-              child: Text('Healthcare Provider Dashboard',
+              child: Text(AppStrings.healthCareProDashBoard,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -36,25 +37,25 @@ class DrawerHcp extends DrawerCustom {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 ListTile(
-                  title: const Text('Healthcare Provider Dashboard'),
+                  title: const Text(AppStrings.healthCareProDashBoard),
                   onTap: () {
                     Navigator.pushNamed(context, '/hcpDashboard');
                   },
                 ),
                 ListTile(
-                  title: const Text('Patients'),
+                  title: const Text(AppStrings.patients),
                   onTap: () {
                     Navigator.pushNamed(context, '/patientshcp');
                   },
                 ),
                 ListTile(
-                  title: const Text('Appointments'),
+                  title: const Text(AppStrings.appointments),
                   onTap: () {
                     Navigator.pushNamed(context, '/appointmentshcp');
                   },
                 ),
                 ListTile(
-                  title: const Text('Recurring Payment'),
+                  title: const Text(AppStrings.recurringpayment),
                   onTap: () {
                     Navigator.pushNamed(context, '/recurringPayment');
                   },
@@ -66,7 +67,7 @@ class DrawerHcp extends DrawerCustom {
             padding: const EdgeInsets.all(30),
             child: ListTile(
               leading: const Icon(Icons.exit_to_app),
-              title: const Text('Sign Out'),
+              title: const Text(AppStrings.signout),
               onTap: () async {
                 await signOut(context);
               },
