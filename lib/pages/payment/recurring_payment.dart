@@ -24,13 +24,16 @@ class _RecurrinfPaymentState extends State<RecurringPayment> {
     super.initState();
   }
 
-late String paymentStatus;
+  late String paymentStatus;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Appointments HCP'),
+          title: const Text('Recurring Payments'),
+          backgroundColor: Colors.white,
+          elevation: 5.0, // This adds a shadow to the AppBar
+          shadowColor: Colors.grey,
         ),
         drawer: const DrawerHcp(),
         body: Center(
@@ -66,79 +69,96 @@ late String paymentStatus;
                             final DocumentSnapshot documentSnapshot =
                                 querySnapshot.docs[index];
                             paymentStatus = documentSnapshot['paymentStatus'];
-                            return ListTile(
-                              title: StreamBuilder<DocumentSnapshot>(
-
-                                  stream: database.getPatientByUid(
-                                      documentSnapshot['patientuid']),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return const Text('Loading...');
-                                    } else if (snapshot.hasError) {
-                                      return Text('Error: ${snapshot.error}');
-                                    } else if (!snapshot.hasData ||
-                                        !snapshot.data!.exists) {
-                                      return const Text('Patient not found');
-                                    } else {
-                                      final DocumentSnapshot querySnapshot =
-                                          snapshot.data!;
-                                      return Text(
-                                          'Patient: ${querySnapshot['firstName']} ${querySnapshot['lastName']}');
-                                    }
-                                  }),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                      'Date: ${documentSnapshot['date']} Time: ${documentSnapshot['time']}'),
-                                  Text('Status: ${documentSnapshot['status']}'),
-                                  Text(
-                                      'Payment Status: ${documentSnapshot['paymentStatus']}'),
-                                ],
-                              ),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                      onPressed: () {
-                                        _viewPaymentDialog(
-                                            context, documentSnapshot.id, paymentStatus);
-                                      },
-                                      icon: const Icon(Icons.payment)),
-                                  IconButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, '/patientDetails',
-                                            arguments:
-                                                documentSnapshot['patientuid']);
-                                      },
-                                      icon: const Icon(Icons.visibility)),
-                                  IconButton(
-                                      onPressed: () {
-                                        database.updateAppointmentStatus(
-                                            documentSnapshot.id, 'Completed');
-                                      },
-                                      icon: const Icon(Icons.check)),
-                                  IconButton(
-                                      onPressed: () {
-                                        database.updateAppointmentStatus(
-                                            documentSnapshot.id, 'Cancelled');
-                                      },
-                                      icon: const Icon(Icons.cancel)),
-                                  IconButton(
-                                      onPressed: () {
-                                        database.updateAppointmentStatus(
-                                            documentSnapshot.id, 'Pending');
-                                      },
-                                      icon: const Icon(Icons.pending_actions)),
-                                  IconButton(
-                                      onPressed: () {
-                                        database.deleteAppointment(
-                                            documentSnapshot.id);
-                                      },
-                                      icon: const Icon(Icons.delete)),
-                                ],
+                            return Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black),
+                                ),
+                                padding: const EdgeInsets.all(15),
+                                child: ListTile(
+                                  title: StreamBuilder<DocumentSnapshot>(
+                                      stream: database.getPatientByUid(
+                                          documentSnapshot['patientuid']),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const Text('Loading...');
+                                        } else if (snapshot.hasError) {
+                                          return Text(
+                                              'Error: ${snapshot.error}');
+                                        } else if (!snapshot.hasData ||
+                                            !snapshot.data!.exists) {
+                                          return const Text(
+                                              'Patient not found');
+                                        } else {
+                                          final DocumentSnapshot querySnapshot =
+                                              snapshot.data!;
+                                          return Text(
+                                              'Patient: ${querySnapshot['firstName']} ${querySnapshot['lastName']}');
+                                        }
+                                      }),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          'Date: ${documentSnapshot['date']} Time: ${documentSnapshot['time']}'),
+                                      Text(
+                                          'Status: ${documentSnapshot['status']}'),
+                                      Text(
+                                          'Payment Status: ${documentSnapshot['paymentStatus']}'),
+                                    ],
+                                  ),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                          onPressed: () {
+                                            _viewPaymentDialog(
+                                                context,
+                                                documentSnapshot.id,
+                                                paymentStatus);
+                                          },
+                                          icon: const Icon(Icons.payment)),
+                                      IconButton(
+                                          onPressed: () {
+                                            Navigator.pushNamed(
+                                                context, '/patientDetails',
+                                                arguments: documentSnapshot[
+                                                    'patientuid']);
+                                          },
+                                          icon: const Icon(Icons.visibility)),
+                                      IconButton(
+                                          onPressed: () {
+                                            database.updateAppointmentStatus(
+                                                documentSnapshot.id,
+                                                'Completed');
+                                          },
+                                          icon: const Icon(Icons.check)),
+                                      IconButton(
+                                          onPressed: () {
+                                            database.updateAppointmentStatus(
+                                                documentSnapshot.id,
+                                                'Cancelled');
+                                          },
+                                          icon: const Icon(Icons.cancel)),
+                                      IconButton(
+                                          onPressed: () {
+                                            database.updateAppointmentStatus(
+                                                documentSnapshot.id, 'Pending');
+                                          },
+                                          icon: const Icon(
+                                              Icons.pending_actions)),
+                                      IconButton(
+                                          onPressed: () {
+                                            database.deleteAppointment(
+                                                documentSnapshot.id);
+                                          },
+                                          icon: const Icon(Icons.delete)),
+                                    ],
+                                  ),
+                                ),
                               ),
                             );
                           },
@@ -152,11 +172,13 @@ late String paymentStatus;
   }
 }
 
-void _viewPaymentDialog(BuildContext context, String appointmentId, String paymentStatus) {
+void _viewPaymentDialog(
+    BuildContext context, String appointmentId, String paymentStatus) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      return ViewPaymentDialog(appointmentId: appointmentId, paymentStatus: paymentStatus);
+      return ViewPaymentDialog(
+          appointmentId: appointmentId, paymentStatus: paymentStatus);
     },
   );
 }

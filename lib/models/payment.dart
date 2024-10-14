@@ -37,4 +37,38 @@ class Payment {
       depositSlip: snapshot['depositSlip'],
     );
   }
+
+  bool isValid() {
+    return _isValidBankName(bankName) &&
+        _isValidAccountNumber(accountNumber) &&
+        _isValidAccountName(accountName) &&
+        _isValidAmount(amount) &&
+        _isValidDate(date) &&
+        _isValidDepositSlip(depositSlip);
+  }
+
+  bool _isValidBankName(String bankName) {
+    return bankName.isNotEmpty;
+  }
+
+  bool _isValidAccountNumber(String accountNumber) {
+    return accountNumber.isNotEmpty && accountNumber.length == 10;
+  }
+
+  bool _isValidAccountName(String accountName) {
+    return accountName.isNotEmpty;
+  }
+
+  bool _isValidAmount(String amount) {
+    return double.tryParse(amount) != null && double.parse(amount) > 0;
+  }
+
+  bool _isValidDate(String date) {
+    // Add your date validation logic here
+    return date.isNotEmpty;
+  }
+
+  bool _isValidDepositSlip(String depositSlip) {
+    return depositSlip.isNotEmpty;
+  }
 }

@@ -38,4 +38,13 @@ class TreatmentHistory {
       prescription: data['prescription'],
     );
   }
+
+  bool validate() {
+    return treatment.isNotEmpty &&
+        date.isNotEmpty &&
+        doctor.isNotEmpty &&
+        doctorName.isNotEmpty &&
+        description.isNotEmpty &&
+        prescription.isNotEmpty;
+  }
 }

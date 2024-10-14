@@ -20,11 +20,10 @@ dependencies:
   pdf: ^3.11.1
   printing: ^5.13.3
   flutter_html: ^3.0.0-alpha.1
-  flutter_web_qrcode_scanner: ^1.1.1
   qr_flutter: ^4.0.0
-  path_provider: ^2.0.5
-  provider: ^6.1.2
-
+  qr_code_scanner: ^0.7.0
+  flutter_web_qrcode_scanner: ^1.1.1
+  
 dev_dependencies:
   mockito: ^5.0.0
   flutter_test:

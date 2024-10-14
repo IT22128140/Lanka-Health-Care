@@ -122,15 +122,30 @@ class _HealthcaremanagerDashboardState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(AppStrings.healthCareManDashBoard),
+        backgroundColor: Colors.white,
+        elevation: 5.0, // This adds a shadow to the AppBar
+        shadowColor: Colors.grey,
       ),
       drawer: const DrawerHcm(),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           children: [
+            const SizedBox(
+              height: 30,
+            ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  side:
+                      const BorderSide(color: Colors.blue), // Added blue border
+                ),
+              ),
               onPressed: () async {
                 await generatePdfAndDownload(); // Use this function to generate and download the PDF on web
               },
@@ -237,7 +252,7 @@ class _HealthcaremanagerDashboardState
                 const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
-                   AppStrings.dailyAppoinments,
+                    AppStrings.dailyAppoinments,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -361,18 +376,30 @@ class _HealthcaremanagerDashboardState
 
   Future<LineChartData> mainData() async {
     String year = DateTime.now().year.toString();
-    double jan = (await database.getAppointmentCountByMonth('$year${AppStrings.year01}'));
-    double feb = (await database.getAppointmentCountByMonth('$year${AppStrings.year02}'));
-    double mar = (await database.getAppointmentCountByMonth('$year${AppStrings.year03}'));
-    double apr = (await database.getAppointmentCountByMonth('$year${AppStrings.year04}'));
-    double may = (await database.getAppointmentCountByMonth('$year${AppStrings.year05}'));
-    double jun = (await database.getAppointmentCountByMonth('$year${AppStrings.year06}'));
-    double jul = (await database.getAppointmentCountByMonth('$year${AppStrings.year07}'));
-    double aug = (await database.getAppointmentCountByMonth('$year${AppStrings.year08}'));
-    double sep = (await database.getAppointmentCountByMonth('$year${AppStrings.year09}'));
-    double oct = (await database.getAppointmentCountByMonth('$year${AppStrings.year10}'));
-    double nov = (await database.getAppointmentCountByMonth('$year${AppStrings.year11}'));
-    double dec = (await database.getAppointmentCountByMonth('$year${AppStrings.year12}'));
+    double jan = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year01}'));
+    double feb = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year02}'));
+    double mar = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year03}'));
+    double apr = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year04}'));
+    double may = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year05}'));
+    double jun = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year06}'));
+    double jul = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year07}'));
+    double aug = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year08}'));
+    double sep = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year09}'));
+    double oct = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year10}'));
+    double nov = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year11}'));
+    double dec = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year12}'));
 
     return LineChartData(
       gridData: FlGridData(
@@ -470,23 +497,28 @@ class _HealthcaremanagerDashboardState
 
 // Week 1: From day 1 to day 7
     double week1 = (await database.getAppointmentCountByWeek(
-        '$yearMonth${AppStrings.yearmonth01}', '$yearMonth${AppStrings.yearmonth07}'));
+        '$yearMonth${AppStrings.yearmonth01}',
+        '$yearMonth${AppStrings.yearmonth07}'));
 
 // Week 2: From day 8 to day 14
     double week2 = (await database.getAppointmentCountByWeek(
-        '$yearMonth${AppStrings.yearmonth08}', '$yearMonth${AppStrings.yearmonth14}'));
+        '$yearMonth${AppStrings.yearmonth08}',
+        '$yearMonth${AppStrings.yearmonth14}'));
 
 // Week 3: From day 15 to day 21
     double week3 = (await database.getAppointmentCountByWeek(
-        '$yearMonth${AppStrings.yearmonth15}', '$yearMonth${AppStrings.yearmonth21}'));
+        '$yearMonth${AppStrings.yearmonth15}',
+        '$yearMonth${AppStrings.yearmonth21}'));
 
 // Week 4: From day 22 to day 28
     double week4 = (await database.getAppointmentCountByWeek(
-        '$yearMonth${AppStrings.yearmonth22}', '$yearMonth${AppStrings.yearmonth28}'));
+        '$yearMonth${AppStrings.yearmonth22}',
+        '$yearMonth${AppStrings.yearmonth28}'));
 
 // Week 5: From day 29 to the end of the month (adjust to handle months with different numbers of days)
     double week5 = (await database.getAppointmentCountByWeek(
-        '$yearMonth${AppStrings.yearmonth29}', '$yearMonth${AppStrings.yearmonth31}'));
+        '$yearMonth${AppStrings.yearmonth29}',
+        '$yearMonth${AppStrings.yearmonth31}'));
 
     return LineChartData(
       gridData: FlGridData(

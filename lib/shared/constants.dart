@@ -1,5 +1,5 @@
 class AppStrings {
-  static const String appName = 'Lanka Health Care'; 
+  static const String appName = 'Lanka Health Care';
   static const String addMedicalInfoTitle = 'Add Medical Info';
   static const String allergiesLabel = 'Allergies';
   static const String allergiescolon = 'Allergies:';
@@ -28,7 +28,7 @@ class AppStrings {
   static const String specialization = 'specialization';
   static const String docID = 'id';
   static const String addPatientButton = 'Add Patient';
-  static const String editPatientTitle = 'Edit Patient';  
+  static const String editPatientTitle = 'Edit Patient';
   static const String updateButton = 'Update';
   static const String deleteButton = 'Delete';
   static const String editMedicalInfoTitle = 'Edit Medical Info';
@@ -45,6 +45,7 @@ class AppStrings {
   static const String prescription = 'prescription';
   static const String doctor = 'doctor';
   static const String patientsDetails = 'Patients Details';
+  static const String patientDetails = 'Patient Details';
   static const String treatmentHistory = 'Treatment History';
   static const String medicalReport = 'Medical Report';
   static const String addMedicalReport = 'Add Medical Report';
@@ -67,7 +68,7 @@ class AppStrings {
   static const String male = 'Male';
   static const String female = 'Female';
   static const String patients = 'Patients';
-  static const String patient = 'Patient'; 
+  static const String patient = 'Patient';
   static const String patientcolon = 'Patient:';
   static const String noPatientsFound = 'No patients found';
   static const String patientGenderLabel = 'Gender';
@@ -153,7 +154,7 @@ class AppStrings {
   static const String patientUid = 'patientuid';
   static const String loading = 'Loading...';
   static const String patientNotFound = 'Patient not found';
-  static const String appointmentsHCP = 'Appointments HCP';  
+  static const String appointmentsHCP = 'Appointments HCP';
   static const String appointments = 'Appointments';
   static const String appointmentsPage = 'Appointments Page';
   static const String availability = 'Availability';
@@ -183,14 +184,14 @@ class AppStrings {
   static const String status = 'status';
   static const String colonpaymentStatus = 'Payment Status: ';
   static const String paymentStatus = 'paymentStatus';
-  static const String totAvailability  = 'Total Availability: ';
+  static const String totAvailability = 'Total Availability: ';
   static const String colonday = 'Day: ';
   static const String colonfrom = 'From: ';
   static const String colonto = 'To: ';
   static const String editavailability = 'Edit Availability';
   static const String download = 'download';
   static const String healthcareDashboardpdf = 'healthcare_dashboard.pdf';
-  static const String pwnotmatch  = 'Passwords do not match';
+  static const String pwnotmatch = 'Passwords do not match';
   static const String healthcaremanager = 'healthcaremanager';
   static const String healthcareprovider = 'healthcareprovider';
   static const String notvalidusertype = 'Please select a valid user type';
@@ -214,4 +215,5 @@ class AppStrings {
   static const String signout = 'Sign Out';
   static const String healthCareProDashBoard = 'Healthcare Provider Dashboard';
   static const String recurringpayment = 'Recurring Payment';
+  static const String downloadQRCode = 'Download QR Code';
 }

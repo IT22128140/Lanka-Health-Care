@@ -6,7 +6,7 @@ import 'package:lanka_health_care/components/my_button.dart';
 import 'package:lanka_health_care/models/availability.dart';
 import 'package:lanka_health_care/services/database.dart';
 import 'edit_availability_dialog.dart';
-import 'package:lanka_health_care/shared/constants.dart'; 
+import 'package:lanka_health_care/shared/constants.dart';
 
 class AvailabilityPage extends StatefulWidget {
   const AvailabilityPage({super.key});
@@ -28,10 +28,13 @@ class _AvailabilityState extends State<AvailabilityPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.availability),
+        backgroundColor: Colors.white,
+        elevation: 5.0, // This adds a shadow to the AppBar
+        shadowColor: Colors.grey,
       ),
       drawer: const DrawerDoctor(),
       body: Center(
-        child: Column(
+        child: Row(
           children: [
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
@@ -92,79 +95,124 @@ class _AvailabilityState extends State<AvailabilityPage> {
             ),
             // Add availability
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  DropdownButtonFormField<String>(
-                    value: dateController.text.isEmpty
-                        ? null
-                        : dateController.text,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.dateLabel,
-                    ),
-                    items: <String>[
-                      AppStrings.sunday,
-                      AppStrings.monday,
-                      AppStrings.tuesday,
-                      AppStrings.wednesday,
-                      AppStrings.thursday,
-                      AppStrings.friday,
-                      AppStrings.saturday,
-                    ].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        dateController.text = newValue!;
-                      });
-                    },
-                  ),
-                  TextField(
-                    controller: arrivetimeController,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.arrivallabeltext,
-                    ),
-                    onTap: () => showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    ).then((value) {
-                      if (value != null) {
-                        arrivetimeController.text = value.format(context);
-                      }
-                    }),
-                  ),
-                  TextField(
-                    controller: leavetimeController,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.leavelabeltext,
-                    ),
-                    onTap: () => showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    ).then((value) {
-                      if (value != null) {
-                        leavetimeController.text = value.format(context);
-                      }
-                    }),
-                  ),
-                  MyButton(
-                    text: AppStrings.addavailability,
-                    onTap: () {
-                      database.addAvailability(
-                        Availability(
-                          date: dateController.text,
-                          arrivetime: arrivetimeController.text,
-                          leavetime: leavetimeController.text,
+              padding: const EdgeInsets.all(30.0),
+              child: Container(
+                width: 300,
+                color: const Color.fromARGB(255, 229, 246, 255),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      const Text(
+                        AppStrings.addavailability,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 30,
                         ),
-                        user.uid,
-                      );
-                    },
-                    width: 500,
+                      ),
+                      const SizedBox(height: 40),
+                      SizedBox(
+                        width: 300, // Set a specific width
+                        child: DropdownButtonFormField<String>(
+                          value: dateController.text.isEmpty
+                              ? null
+                              : dateController.text,
+                          decoration: InputDecoration(
+                            labelText: AppStrings.dateLabel,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                          ),
+                          items: <String>[
+                            AppStrings.sunday,
+                            AppStrings.monday,
+                            AppStrings.tuesday,
+                            AppStrings.wednesday,
+                            AppStrings.thursday,
+                            AppStrings.friday,
+                            AppStrings.saturday,
+                          ].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (newValue) {
+                            setState(() {
+                              dateController.text = newValue!;
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      SizedBox(
+                        width: 300, // Set a specific width
+                        child: TextField(
+                          controller: arrivetimeController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                            labelText: AppStrings.arrivallabeltext,
+                          ),
+                          onTap: () => showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          ).then((value) {
+                            if (value != null) {
+                              arrivetimeController.text = value.format(context);
+                            }
+                          }),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: 300, // Set a specific width
+                        child: TextField(
+                          controller: leavetimeController,
+                          decoration: InputDecoration(
+                            labelText: AppStrings.leavelabeltext,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                          ),
+                          onTap: () => showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          ).then((value) {
+                            if (value != null) {
+                              leavetimeController.text = value.format(context);
+                            }
+                          }),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: MyButton(
+                          text: AppStrings.addavailability,
+                          onTap: () {
+                            database.addAvailability(
+                              Availability(
+                                date: dateController.text,
+                                arrivetime: arrivetimeController.text,
+                                leavetime: leavetimeController.text,
+                              ),
+                              user.uid,
+                            );
+                          },
+                          width: 300,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ],
