@@ -46,53 +46,73 @@ class _PatientsDetailsState extends State<PatientsDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppStrings.patientsDetails),
+        title: const Text(AppStrings.patientDetails),
+        backgroundColor: Colors.white,
+        elevation: 5.0, // This adds a shadow to the AppBar
+        shadowColor: Colors.grey,
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Text(AppStrings.patientDetails,
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                child: StreamBuilder<DocumentSnapshot>(
-                    stream: databaseService.getPatientByUid(widget.patientId),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.blue),
-                          ),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}',
-                            style: const TextStyle(
-                                color: Colors.blue, fontSize: 30));
-                      } else if (!snapshot.hasData ||
-                          snapshot.data!.data() == null) {
-                        return const Text(AppStrings.noPatientFound,
-                            style: TextStyle(color: Colors.blue, fontSize: 30));
-                      } else {
-                        final patient =
-                            snapshot.data!.data() as Map<String, dynamic>;
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                                '${AppStrings.patientFirstNameLabel}: ${patient[AppStrings.patientfirstName] ?? 'N/A'}'),
-                            Text(
-                                '${AppStrings.patientLastNameLabel}: ${patient[AppStrings.patientlastName] ?? 'N/A'}'),
-                            Text(
-                                '${AppStrings.patientDOBLabel}: ${patient[AppStrings.patientdob] != null ? DateFormat('yyyy-MM-dd').format((patient[AppStrings.patientdob] as Timestamp).toDate()) : 'N/A'}'),
-                            Text(
-                                '${AppStrings.patientAgeLabel}: ${patient[AppStrings.patientdob] != null ? calculateAge((patient[AppStrings.patientdob] as Timestamp).toDate()) : 'N/A'}'),
-                            Text(
-                                '${AppStrings.patientPhoneLabel}: ${patient[AppStrings.patientPhone] ?? 'N/A'}'),
-                          ],
-                        );
-                      }
-                    }),
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    child: StreamBuilder<DocumentSnapshot>(
+                        stream:
+                            databaseService.getPatientByUid(widget.patientId),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.blue),
+                              ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}',
+                                style: const TextStyle(
+                                    color: Colors.blue, fontSize: 30));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.data() == null) {
+                            return const Text(AppStrings.noPatientFound,
+                                style: TextStyle(
+                                    color: Colors.blue, fontSize: 30));
+                          } else {
+                            final patient =
+                                snapshot.data!.data() as Map<String, dynamic>;
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${AppStrings.patientFirstNameLabel}: ${patient[AppStrings.patientfirstName] ?? 'N/A'}',
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                                Text(
+                                    '${AppStrings.patientLastNameLabel}: ${patient[AppStrings.patientlastName] ?? 'N/A'}',
+                                    style: const TextStyle(fontSize: 20)),
+                                Text(
+                                    '${AppStrings.patientDOBLabel}: ${patient[AppStrings.patientdob] != null ? DateFormat('yyyy-MM-dd').format((patient[AppStrings.patientdob] as Timestamp).toDate()) : 'N/A'}',
+                                    style: const TextStyle(fontSize: 20)),
+                                Text(
+                                    '${AppStrings.patientAgeLabel}: ${patient[AppStrings.patientdob] != null ? calculateAge((patient[AppStrings.patientdob] as Timestamp).toDate()) : 'N/A'}',
+                                    style: const TextStyle(fontSize: 20)),
+                                Text(
+                                    '${AppStrings.patientPhoneLabel}: ${patient[AppStrings.patientPhone] ?? 'N/A'}',
+                                    style: const TextStyle(fontSize: 20)),
+                              ],
+                            );
+                          }
+                        }),
+                  ),
+                ],
               ),
               Column(
                 children: [
@@ -101,8 +121,8 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                     version: QrVersions.auto,
                     size: 200.0,
                   ),
-                  ElevatedButton(
-                    onPressed: () async {
+                  MyButton(
+                    onTap: () async {
                       final qrValidationResult = QrValidator.validate(
                         data: widget.patientId,
                         version: QrVersions.auto,
@@ -137,13 +157,16 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                         }
                       }
                     },
-                    child: const Text('Download QR Code'),
+                    text: AppStrings.downloadQRCode,
+                    width: 300,
                   ),
                 ],
               )
             ],
           ),
-          const Text(AppStrings.medicalReport),
+          const SizedBox(height: 30),
+          const Text(AppStrings.medicalReport,
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
                 stream:
@@ -175,131 +198,144 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                       ],
                     );
                   } else {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        final medicalHistory = snapshot.data!.docs[index].data()
-                            as Map<String, dynamic>;
-                        final medicalHistoryId = snapshot.data!.docs[index].id;
-                        return ListTile(
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                  '${AppStrings.allergiescolon} ${medicalHistory[AppStrings.allergies] ?? 'N/A'}'),
-                              Text(
-                                  '${AppStrings.medicationscolon} ${medicalHistory[AppStrings.medications] ?? 'N/A'}'),
-                              Text(
-                                  '${AppStrings.surgeriescolon} ${medicalHistory[AppStrings.surgeries] ?? 'N/A'}'),
-                            ],
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit),
-                                onPressed: () {
-                                  EditMedicalReportDialog
-                                      .showEditMedicalReportDialog(
-                                          context,
-                                          medicalHistoryId,
-                                          medicalHistory,
-                                          widget.patientId);
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () {
-                                  databaseService.deleteMedicalReport(
-                                      widget.patientId, medicalHistoryId);
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  }
-                }),
-          ),
-          const Text(AppStrings.treatmentHistory),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-                stream: databaseService.getTreatmentHistory(widget.patientId),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                    return SizedBox(
+                      width: 800,
+                      child: ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          final medicalHistory = snapshot.data!.docs[index]
+                              .data() as Map<String, dynamic>;
+                          final medicalHistoryId =
+                              snapshot.data!.docs[index].id;
+                          return ListTile(
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    '${AppStrings.allergiescolon} ${medicalHistory[AppStrings.allergies] ?? 'N/A'}'),
+                                Text(
+                                    '${AppStrings.medicationscolon} ${medicalHistory[AppStrings.medications] ?? 'N/A'}'),
+                                Text(
+                                    '${AppStrings.surgeriescolon} ${medicalHistory[AppStrings.surgeries] ?? 'N/A'}'),
+                              ],
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit),
+                                  onPressed: () {
+                                    EditMedicalReportDialog
+                                        .showEditMedicalReportDialog(
+                                            context,
+                                            medicalHistoryId,
+                                            medicalHistory,
+                                            widget.patientId);
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    databaseService.deleteMedicalReport(
+                                        widget.patientId, medicalHistoryId);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     );
-                  } else if (snapshot.hasError) {
-                    return Text('${AppStrings.error} ${snapshot.error}',
-                        style:
-                            const TextStyle(color: Colors.blue, fontSize: 30));
-                  } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Text(AppStrings.noTreatmentHistoryFound,
-                        style: TextStyle(color: Colors.blue, fontSize: 30));
-                  } else {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        final treatmentHistory = snapshot.data!.docs[index]
-                            .data() as Map<String, dynamic>;
-                        final treatmentHistoryId =
-                            snapshot.data!.docs[index].id;
-                        return ListTile(
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                  '${AppStrings.treatmentcolon}  ${treatmentHistory[AppStrings.treatment] ?? 'N/A'}'),
-                              Text(
-                                  '${AppStrings.colondate} ${treatmentHistory[AppStrings.date] ?? 'N/A'}'),
-                              Text(
-                                  '${AppStrings.doctorcolon} ${treatmentHistory[AppStrings.doctorName] ?? 'N/A'}'),
-                              Text(
-                                  '${AppStrings.descriptioncolon} ${treatmentHistory[AppStrings.description] ?? 'N/A'}'),
-                              Text(
-                                  '${AppStrings.prescriptioncolon} ${treatmentHistory[AppStrings.prescription] ?? 'N/A'}'),
-                            ],
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit),
-                                onPressed: () {
-                                  EditTreatmentHistoryDialog
-                                      .showEditTreatmentHistoryDialog(
-                                          context,
-                                          treatmentHistoryId,
-                                          treatmentHistory,
-                                          widget.patientId);
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () {
-                                  databaseService.deleteTreatmentHistory(
-                                      widget.patientId, treatmentHistoryId);
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
                   }
                 }),
           ),
-          MyButton(
-            width: 500,
-            onTap: () {
-              AddTreatmentHistoryDialog.showAddTreatmentHistoryDialog(
-                  context, widget.patientId);
-            },
-            text: AppStrings.addTreatmentHistory,
+          const Text(AppStrings.treatmentHistory,
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+          Expanded(
+            child: SizedBox(
+              width: 800,
+              child: StreamBuilder<QuerySnapshot>(
+                  stream: databaseService.getTreatmentHistory(widget.patientId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.blue),
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('${AppStrings.error} ${snapshot.error}',
+                          style: const TextStyle(
+                              color: Colors.blue, fontSize: 30));
+                    } else if (!snapshot.hasData ||
+                        snapshot.data!.docs.isEmpty) {
+                      return const Text(AppStrings.noTreatmentHistoryFound,
+                          style: TextStyle(color: Colors.blue, fontSize: 30));
+                    } else {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          final treatmentHistory = snapshot.data!.docs[index]
+                              .data() as Map<String, dynamic>;
+                          final treatmentHistoryId =
+                              snapshot.data!.docs[index].id;
+                          return ListTile(
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    '${AppStrings.treatmentcolon}  ${treatmentHistory[AppStrings.treatment] ?? 'N/A'}'),
+                                Text(
+                                    '${AppStrings.colondate} ${treatmentHistory[AppStrings.date] ?? 'N/A'}'),
+                                Text(
+                                    '${AppStrings.doctorcolon} ${treatmentHistory[AppStrings.doctorName] ?? 'N/A'}'),
+                                Text(
+                                    '${AppStrings.descriptioncolon} ${treatmentHistory[AppStrings.description] ?? 'N/A'}'),
+                                Text(
+                                    '${AppStrings.prescriptioncolon} ${treatmentHistory[AppStrings.prescription] ?? 'N/A'}'),
+                              ],
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit),
+                                  onPressed: () {
+                                    EditTreatmentHistoryDialog
+                                        .showEditTreatmentHistoryDialog(
+                                            context,
+                                            treatmentHistoryId,
+                                            treatmentHistory,
+                                            widget.patientId);
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    databaseService.deleteTreatmentHistory(
+                                        widget.patientId, treatmentHistoryId);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  }),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0, bottom: 20.0),
+            child: MyButton(
+              width: 500,
+              onTap: () {
+                AddTreatmentHistoryDialog.showAddTreatmentHistoryDialog(
+                    context, widget.patientId);
+              },
+              text: AppStrings.addTreatmentHistory,
+            ),
           ),
         ],
       ),

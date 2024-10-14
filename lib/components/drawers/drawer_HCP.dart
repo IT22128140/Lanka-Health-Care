@@ -18,6 +18,7 @@ class DrawerHcp extends DrawerCustom {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Colors.white,
       child: Column(
         children: <Widget>[
           const DrawerHeader(

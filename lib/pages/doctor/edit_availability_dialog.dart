@@ -6,10 +6,14 @@ import 'package:lanka_health_care/shared/constants.dart';
 class EditAvailabilityDialog {
   final DatabaseService database = DatabaseService();
 
-  void show(BuildContext context, Map<String, dynamic> data, String dataid, String userId) {
-    final TextEditingController editDateController = TextEditingController(text: data[AppStrings.date]);
-    final TextEditingController editArrivetimeController = TextEditingController(text: data[AppStrings.arrivetime]);
-    final TextEditingController editLeavetimeController = TextEditingController(text: data[AppStrings.leavetime]);
+  void show(BuildContext context, Map<String, dynamic> data, String dataid,
+      String userId) {
+    final TextEditingController editDateController =
+        TextEditingController(text: data[AppStrings.date]);
+    final TextEditingController editArrivetimeController =
+        TextEditingController(text: data[AppStrings.arrivetime]);
+    final TextEditingController editLeavetimeController =
+        TextEditingController(text: data[AppStrings.leavetime]);
 
     showDialog(
       context: context,
