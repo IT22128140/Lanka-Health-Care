@@ -50,7 +50,7 @@ class _PatientsState extends State<PatientsPage> {
                         return const Text(AppStrings.noPatientFound,
                             style: TextStyle(color: Colors.blue, fontSize: 30));
                       } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}',
+                        return Text('${AppStrings.error} ${snapshot.error}',
                             style: const TextStyle(
                                 color: Colors.blue, fontSize: 30));
                       } else {

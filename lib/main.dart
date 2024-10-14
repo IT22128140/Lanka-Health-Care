@@ -14,6 +14,7 @@ import 'package:lanka_health_care/pages/heathcaremanager/healthcaremanager_dashb
 import 'package:lanka_health_care/pages/patients/patients_details.dart';
 import 'package:lanka_health_care/pages/patients/patients_page.dart';
 import 'package:lanka_health_care/pages/payment/recurring_payment.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +33,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lanka Health Care',
+      title: AppStrings.appName,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

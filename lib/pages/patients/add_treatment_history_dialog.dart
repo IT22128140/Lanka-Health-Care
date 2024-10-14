@@ -50,7 +50,7 @@ class AddTreatmentHistoryDialog {
                   final doctorsList = await databaseService
                       .getDoctorNamesByFirstName(textEditingValue.text);
                   return doctorsList.where((doctor) {
-                    return (doctor['firstName'] ?? '')
+                    return (doctor[AppStrings.doctorFirstNameLabel] ?? '')
                         .toLowerCase()
                         .contains(textEditingValue.text.toLowerCase());
                   }).map((doctor) => {
