@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:lanka_health_care/components/drawers/drawer_HCM.dart';
 import 'package:lanka_health_care/services/database.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:lanka_health_care/shared/constants.dart';
 
 class HealthcaremanagerDashboard extends StatefulWidget {
   const HealthcaremanagerDashboard({super.key});
@@ -64,7 +65,7 @@ class _HealthcaremanagerDashboardState
             child: pw.Column(
               children: [
                 pw.Text(
-                  'Healthcare Manager Dashboard',
+                  AppStrings.healthCareManDashBoard,
                   style: pw.TextStyle(
                     font: ttf,
                     fontSize: 24,
@@ -72,7 +73,7 @@ class _HealthcaremanagerDashboardState
                 ),
                 pw.SizedBox(height: 20),
                 pw.Text(
-                  'Monthly Appointments Chart',
+                  AppStrings.monthlyAppoinmentsChart,
                   style: pw.TextStyle(font: ttf),
                 ),
                 if (monthlyChartImage != null)
@@ -80,7 +81,7 @@ class _HealthcaremanagerDashboardState
                       height: 200, width: 300),
                 pw.SizedBox(height: 20),
                 pw.Text(
-                  'Weekly Appointments Chart',
+                  AppStrings.weeklyAppoinmentsChart,
                   style: pw.TextStyle(font: ttf),
                 ),
                 if (weeklyChartImage != null)
@@ -88,7 +89,7 @@ class _HealthcaremanagerDashboardState
                       height: 200, width: 300),
                 pw.SizedBox(height: 20),
                 pw.Text(
-                  'Daily Appointments Chart',
+                  AppStrings.dailyAppoinmentsChart,
                   style: pw.TextStyle(font: ttf),
                 ),
                 if (dailyChartImage != null)
@@ -107,7 +108,7 @@ class _HealthcaremanagerDashboardState
     final blob = html.Blob([pdfBytes], 'application/pdf');
     final url = html.Url.createObjectUrlFromBlob(blob);
     final anchor = html.AnchorElement(href: url)
-      ..setAttribute('download', 'healthcare_dashboard.pdf');
+      ..setAttribute(AppStrings.download, AppStrings.healthcareDashboardpdf);
     html.document.body!.append(anchor);
     anchor.click();
     anchor.remove();
@@ -122,7 +123,7 @@ class _HealthcaremanagerDashboardState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Healthcare Manager Dashboard'),
+        title: const Text(AppStrings.healthCareManDashBoard),
       ),
       drawer: const DrawerHcm(),
       body: SingleChildScrollView(
@@ -133,7 +134,7 @@ class _HealthcaremanagerDashboardState
               onPressed: () async {
                 await generatePdfAndDownload(); // Use this function to generate and download the PDF on web
               },
-              child: const Text('Download as PDF'),
+              child: const Text(AppStrings.downloadAsPDF),
             ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -144,7 +145,7 @@ class _HealthcaremanagerDashboardState
                       const Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Text(
-                          'Monthly Appointments',
+                          AppStrings.monthlyAppoinments,
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -173,7 +174,7 @@ class _HealthcaremanagerDashboardState
                                       child: CircularProgressIndicator());
                                 } else if (snapshot.hasError) {
                                   return const Center(
-                                      child: Text('Error loading data'));
+                                      child: Text(AppStrings.errorLoadingData));
                                 } else {
                                   return LineChart(snapshot.data!);
                                 }
@@ -191,7 +192,7 @@ class _HealthcaremanagerDashboardState
                         const Padding(
                           padding: EdgeInsets.all(16.0),
                           child: Text(
-                            'Weekly Appointments (Current Month)',
+                            AppStrings.weeklyAppoinments,
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -217,7 +218,7 @@ class _HealthcaremanagerDashboardState
                                       child: CircularProgressIndicator());
                                 } else if (snapshot.hasError) {
                                   return const Center(
-                                      child: Text('Error loading data'));
+                                      child: Text(AppStrings.errorLoadingData));
                                 } else {
                                   return LineChart(snapshot.data!);
                                 }
@@ -236,7 +237,7 @@ class _HealthcaremanagerDashboardState
                 const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
-                    'Daily Appointments (Current Week)',
+                   AppStrings.dailyAppoinments,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -264,7 +265,7 @@ class _HealthcaremanagerDashboardState
                                 child: CircularProgressIndicator());
                           } else if (snapshot.hasError) {
                             return const Center(
-                                child: Text('Error loading data'));
+                                child: Text(AppStrings.errorLoadingData));
                           } else {
                             return LineChart(snapshot.data!);
                           }
@@ -289,40 +290,40 @@ class _HealthcaremanagerDashboardState
     Widget text;
     switch (value.toInt()) {
       case 0:
-        text = const Text('Jan', style: style);
+        text = const Text(AppStrings.january, style: style);
         break;
       case 1:
-        text = const Text('Feb', style: style);
+        text = const Text(AppStrings.february, style: style);
         break;
       case 2:
-        text = const Text('Mar', style: style);
+        text = const Text(AppStrings.march, style: style);
         break;
       case 3:
-        text = const Text('Apr', style: style);
+        text = const Text(AppStrings.april, style: style);
         break;
       case 4:
-        text = const Text('May', style: style);
+        text = const Text(AppStrings.may, style: style);
         break;
       case 5:
-        text = const Text('Jun', style: style);
+        text = const Text(AppStrings.june, style: style);
         break;
       case 6:
-        text = const Text('Jul', style: style);
+        text = const Text(AppStrings.july, style: style);
         break;
       case 7:
-        text = const Text('Aug', style: style);
+        text = const Text(AppStrings.august, style: style);
         break;
       case 8:
-        text = const Text('Sep', style: style);
+        text = const Text(AppStrings.september, style: style);
         break;
       case 9:
-        text = const Text('Oct', style: style);
+        text = const Text(AppStrings.october, style: style);
         break;
       case 10:
-        text = const Text('Nov', style: style);
+        text = const Text(AppStrings.november, style: style);
         break;
       case 11:
-        text = const Text('Dec', style: style);
+        text = const Text(AppStrings.december, style: style);
         break;
       default:
         text = const Text('', style: style);
@@ -343,13 +344,13 @@ class _HealthcaremanagerDashboardState
     String text;
     switch (value.toInt()) {
       case 10:
-        text = '10';
+        text = AppStrings.ten;
         break;
       case 20:
-        text = '20';
+        text = AppStrings.twenty;
         break;
       case 30:
-        text = '30';
+        text = AppStrings.thirty;
         break;
       default:
         return Container();
@@ -360,18 +361,18 @@ class _HealthcaremanagerDashboardState
 
   Future<LineChartData> mainData() async {
     String year = DateTime.now().year.toString();
-    double jan = (await database.getAppointmentCountByMonth('$year-01'));
-    double feb = (await database.getAppointmentCountByMonth('$year-02'));
-    double mar = (await database.getAppointmentCountByMonth('$year-03'));
-    double apr = (await database.getAppointmentCountByMonth('$year-04'));
-    double may = (await database.getAppointmentCountByMonth('$year-05'));
-    double jun = (await database.getAppointmentCountByMonth('$year-06'));
-    double jul = (await database.getAppointmentCountByMonth('$year-07'));
-    double aug = (await database.getAppointmentCountByMonth('$year-08'));
-    double sep = (await database.getAppointmentCountByMonth('$year-09'));
-    double oct = (await database.getAppointmentCountByMonth('$year-10'));
-    double nov = (await database.getAppointmentCountByMonth('$year-11'));
-    double dec = (await database.getAppointmentCountByMonth('$year-12'));
+    double jan = (await database.getAppointmentCountByMonth('$year${AppStrings.year01}'));
+    double feb = (await database.getAppointmentCountByMonth('$year${AppStrings.year02}'));
+    double mar = (await database.getAppointmentCountByMonth('$year${AppStrings.year03}'));
+    double apr = (await database.getAppointmentCountByMonth('$year${AppStrings.year04}'));
+    double may = (await database.getAppointmentCountByMonth('$year${AppStrings.year05}'));
+    double jun = (await database.getAppointmentCountByMonth('$year${AppStrings.year06}'));
+    double jul = (await database.getAppointmentCountByMonth('$year${AppStrings.year07}'));
+    double aug = (await database.getAppointmentCountByMonth('$year${AppStrings.year08}'));
+    double sep = (await database.getAppointmentCountByMonth('$year${AppStrings.year09}'));
+    double oct = (await database.getAppointmentCountByMonth('$year${AppStrings.year10}'));
+    double nov = (await database.getAppointmentCountByMonth('$year${AppStrings.year11}'));
+    double dec = (await database.getAppointmentCountByMonth('$year${AppStrings.year12}'));
 
     return LineChartData(
       gridData: FlGridData(
@@ -465,27 +466,27 @@ class _HealthcaremanagerDashboardState
 
   Future<LineChartData> weeklyData() async {
     String yearMonth =
-        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}";
+        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, AppStrings.zero)}";
 
 // Week 1: From day 1 to day 7
     double week1 = (await database.getAppointmentCountByWeek(
-        '$yearMonth-01', '$yearMonth-07'));
+        '$yearMonth${AppStrings.yearmonth01}', '$yearMonth${AppStrings.yearmonth07}'));
 
 // Week 2: From day 8 to day 14
     double week2 = (await database.getAppointmentCountByWeek(
-        '$yearMonth-08', '$yearMonth-14'));
+        '$yearMonth${AppStrings.yearmonth08}', '$yearMonth${AppStrings.yearmonth14}'));
 
 // Week 3: From day 15 to day 21
     double week3 = (await database.getAppointmentCountByWeek(
-        '$yearMonth-15', '$yearMonth-21'));
+        '$yearMonth${AppStrings.yearmonth15}', '$yearMonth${AppStrings.yearmonth21}'));
 
 // Week 4: From day 22 to day 28
     double week4 = (await database.getAppointmentCountByWeek(
-        '$yearMonth-22', '$yearMonth-28'));
+        '$yearMonth${AppStrings.yearmonth22}', '$yearMonth${AppStrings.yearmonth28}'));
 
 // Week 5: From day 29 to the end of the month (adjust to handle months with different numbers of days)
     double week5 = (await database.getAppointmentCountByWeek(
-        '$yearMonth-29', '$yearMonth-31'));
+        '$yearMonth${AppStrings.yearmonth29}', '$yearMonth${AppStrings.yearmonth31}'));
 
     return LineChartData(
       gridData: FlGridData(
@@ -527,19 +528,19 @@ class _HealthcaremanagerDashboardState
               Widget text;
               switch (value.toInt()) {
                 case 0:
-                  text = const Text('Week 1', style: style);
+                  text = const Text(AppStrings.week1, style: style);
                   break;
                 case 1:
-                  text = const Text('Week 2', style: style);
+                  text = const Text(AppStrings.week2, style: style);
                   break;
                 case 2:
-                  text = const Text('Week 3', style: style);
+                  text = const Text(AppStrings.week3, style: style);
                   break;
                 case 3:
-                  text = const Text('Week 4', style: style);
+                  text = const Text(AppStrings.week4, style: style);
                   break;
                 case 4:
-                  text = const Text('Week 5', style: style);
+                  text = const Text(AppStrings.week5, style: style);
                   break;
                 default:
                   text = const Text('', style: style);
@@ -655,25 +656,25 @@ class _HealthcaremanagerDashboardState
               Widget text;
               switch (value.toInt()) {
                 case 0:
-                  text = const Text('Day 1', style: style);
+                  text = const Text(AppStrings.day1, style: style);
                   break;
                 case 1:
-                  text = const Text('Day 2', style: style);
+                  text = const Text(AppStrings.day2, style: style);
                   break;
                 case 2:
-                  text = const Text('Day 3', style: style);
+                  text = const Text(AppStrings.day3, style: style);
                   break;
                 case 3:
-                  text = const Text('Day 4', style: style);
+                  text = const Text(AppStrings.day4, style: style);
                   break;
                 case 4:
-                  text = const Text('Day 5', style: style);
+                  text = const Text(AppStrings.day5, style: style);
                   break;
                 case 5:
-                  text = const Text('Day 6', style: style);
+                  text = const Text(AppStrings.day6, style: style);
                   break;
                 case 6:
-                  text = const Text('Day 7', style: style);
+                  text = const Text(AppStrings.day7, style: style);
                   break;
                 default:
                   text = const Text('', style: style);

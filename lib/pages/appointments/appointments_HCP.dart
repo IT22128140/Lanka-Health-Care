@@ -6,6 +6,7 @@ import 'package:lanka_health_care/components/my_button.dart';
 import 'package:lanka_health_care/pages/appointments/appointments.dart';
 import 'package:lanka_health_care/services/database.dart';
 import 'package:lanka_health_care/pages/payment/show_payment.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class AppointmentsHcp extends Appointments {
   const AppointmentsHcp({super.key});
@@ -21,7 +22,7 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
   @override
   void initState() {
     filteredData = database.getAppointmentsByDate(
-        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}");
+        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, AppStrings.zero)}-${DateTime.now().day.toString().padLeft(2,  AppStrings.zero)}");
     super.initState();
   }
 
@@ -31,7 +32,7 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Appointments HCP'),
+          title: const Text(AppStrings.appointmentsHCP),
         ),
         drawer: const DrawerHcp(),
         body: Center(
@@ -50,11 +51,11 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                     // Handle the selected date
                     setState(() {
                       filteredData = database.getAppointmentsByDate(
-                          "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}");
+                          "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, AppStrings.zero)}-${selectedDate.day.toString().padLeft(2, AppStrings.zero)}");
                     });
                   }
                 },
-                child: const Text('Select Date'),
+                child: const Text(AppStrings.selectDate),
               ),
               const SizedBox(height: 50),
               Expanded(
@@ -70,10 +71,10 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                         );
                       } else if (!snapshot.hasData ||
                           (snapshot.data as QuerySnapshot).docs.isEmpty) {
-                        return const Text('No Appointments found',
+                        return const Text(AppStrings.noAppointmentsFound,
                             style: TextStyle(color: Colors.blue, fontSize: 30));
                       } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}',
+                        return Text('${AppStrings.error} ${snapshot.error}',
                             style: const TextStyle(
                                 color: Colors.blue, fontSize: 30));
                       } else {
@@ -84,35 +85,35 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                           itemBuilder: (context, index) {
                             final DocumentSnapshot documentSnapshot =
                                 querySnapshot.docs[index];
-                            paymentStatus = documentSnapshot['paymentStatus'];
+                            paymentStatus = documentSnapshot[AppStrings.paymentStatus];
                             return ListTile(
                               title: StreamBuilder<DocumentSnapshot>(
                                   stream: database.getPatientByUid(
-                                      documentSnapshot['patientuid']),
+                                      documentSnapshot[AppStrings.patientUid]),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
-                                      return const Text('Loading...');
+                                      return const Text(AppStrings.loading);
                                     } else if (snapshot.hasError) {
-                                      return Text('Error: ${snapshot.error}');
+                                      return Text('${AppStrings.error} ${snapshot.error}');
                                     } else if (!snapshot.hasData ||
                                         !snapshot.data!.exists) {
-                                      return const Text('Patient not found');
+                                      return const Text(AppStrings.patientNotFound);
                                     } else {
                                       final DocumentSnapshot querySnapshot =
                                           snapshot.data!;
                                       return Text(
-                                          'Patient: ${querySnapshot['firstName']} ${querySnapshot['lastName']}');
+                                          '${AppStrings.patientcolon} ${querySnapshot[AppStrings.patientfirstName]} ${querySnapshot[AppStrings.patientlastName]}');
                                     }
                                   }),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                      'Date: ${documentSnapshot['date']} Time: ${documentSnapshot['time']}'),
-                                  Text('Status: ${documentSnapshot['status']}'),
+                                      '${AppStrings.colondate} ${documentSnapshot[AppStrings.date]} ${AppStrings.colontime} ${documentSnapshot[AppStrings.time]}'),
+                                  Text('${AppStrings.colonstatus}  ${documentSnapshot[AppStrings.status]}'),
                                   Text(
-                                      'Payment Status: ${documentSnapshot['paymentStatus']}'),
+                                      '${AppStrings.colonpaymentStatus}  ${documentSnapshot[AppStrings.paymentStatus]}'),
                                 ],
                               ),
                               trailing: Row(
@@ -129,25 +130,25 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                                         Navigator.pushNamed(
                                             context, '/patientDetails',
                                             arguments:
-                                                documentSnapshot['patientuid']);
+                                                documentSnapshot[AppStrings.patientUid]);
                                       },
                                       icon: const Icon(Icons.visibility)),
                                   IconButton(
                                       onPressed: () {
                                         database.updateAppointmentStatus(
-                                            documentSnapshot.id, 'Completed');
+                                            documentSnapshot.id, AppStrings.completed);
                                       },
                                       icon: const Icon(Icons.check)),
                                   IconButton(
                                       onPressed: () {
                                         database.updateAppointmentStatus(
-                                            documentSnapshot.id, 'Cancelled');
+                                            documentSnapshot.id, AppStrings.cancelled);
                                       },
                                       icon: const Icon(Icons.cancel)),
                                   IconButton(
                                       onPressed: () {
                                         database.updateAppointmentStatus(
-                                            documentSnapshot.id, 'Pending');
+                                            documentSnapshot.id, AppStrings.pending);
                                       },
                                       icon: const Icon(Icons.pending_actions)),
                                   IconButton(
@@ -165,7 +166,7 @@ class _AppointmentsHcpState extends State<AppointmentsHcp> {
                     }),
               ),
               MyButton(
-                  text: 'Add appointment',
+                  text: AppStrings.addAppointment,
                   onTap: () {
                     Navigator.pushNamed(context, '/add_appointment');
                   },

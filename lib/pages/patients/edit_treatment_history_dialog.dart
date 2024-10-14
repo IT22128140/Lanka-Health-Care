@@ -2,39 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lanka_health_care/models/treatment_history.dart';
 import 'package:lanka_health_care/services/database.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class EditTreatmentHistoryDialog {
     static void showEditTreatmentHistoryDialog(
       BuildContext context, String treatmentHistoryId, data, String patientId) {
     final DatabaseService databaseService = DatabaseService();
     final TextEditingController treatment =
-        TextEditingController(text: data['treatment']);
+        TextEditingController(text: data[AppStrings.treatment]);
     final TextEditingController date =
-        TextEditingController(text: data['date']);
+        TextEditingController(text: data[AppStrings.date]);
     final TextEditingController doctor =
-        TextEditingController(text: data['doctorName']);
+        TextEditingController(text: data[AppStrings.doctorName]);
     final TextEditingController description =
-        TextEditingController(text: data['description']);
+        TextEditingController(text: data[AppStrings.description]);
     final TextEditingController prescription =
-        TextEditingController(text: data['prescription']);
+        TextEditingController(text: data[AppStrings.prescription]);
     final TextEditingController doctorId =
-        TextEditingController(text: data['doctor']);
+        TextEditingController(text: data[AppStrings.doctor]);
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Edit Treatment History'),
+          title: const Text(AppStrings.editTreatmentHistoryTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               TextField(
                 controller: treatment,
-                decoration: const InputDecoration(labelText: 'Treatment'),
+                decoration: const InputDecoration(labelText: AppStrings.treatmentLabel),
               ),
               TextField(
                 controller: date,
-                decoration: const InputDecoration(labelText: 'Date'),
+                decoration: const InputDecoration(labelText: AppStrings.dateLabel),
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
                   DateTime? pickedDate = await showDatePicker(
@@ -56,24 +57,24 @@ class EditTreatmentHistoryDialog {
                   final doctorsList = await databaseService
                       .getDoctorNamesByFirstName(textEditingValue.text);
                   return doctorsList.where((doctor) {
-                    return (doctor['firstName'] ?? '')
+                    return (doctor[AppStrings.doctorFirstNameLabel] ?? '')
                         .toLowerCase()
                         .contains(textEditingValue.text.toLowerCase());
                   }).map((doctor) => {
-                        'id': doctor['id'] ?? '',
-                        'firstName': doctor['firstName'] ?? '',
-                        'lastName': doctor['lastName'] ?? '',
+                        AppStrings.docID: doctor[AppStrings.docID] ?? '',
+                        AppStrings.doctorFirstNameLabel: doctor[AppStrings.doctorFirstNameLabel] ?? '',
+                        AppStrings.doctorLastNameLabel: doctor[AppStrings.doctorLastNameLabel] ?? '',
                       });
                 },
                 displayStringForOption: (Map<String, dynamic> option) =>
-                    (option['firstName'] ?? '') +
+                    (option[AppStrings.doctorFirstNameLabel] ?? '') +
                     ' ' +
-                    (option['lastName'] ?? ''),
+                    (option[AppStrings.doctorLastNameLabel] ?? ''),
                 onSelected: (Map<String, dynamic> selection) {
-                  doctor.text = (selection['firstName'] ?? '') +
+                  doctor.text = (selection[AppStrings.doctorFirstNameLabel] ?? '') +
                       ' ' +
-                      (selection['lastName'] ?? '');
-                  doctorId.text = selection['id'] ?? '';
+                      (selection[AppStrings.doctorLastNameLabel] ?? '');
+                  doctorId.text = selection[AppStrings.docID] ?? '';
                 },
                 fieldViewBuilder: (BuildContext context,
                     TextEditingController textEditingController,
@@ -82,17 +83,17 @@ class EditTreatmentHistoryDialog {
                   return TextField(
                     controller: textEditingController,
                     focusNode: focusNode,
-                    decoration: const InputDecoration(labelText: 'Doctor'),
+                    decoration: const InputDecoration(labelText: AppStrings.doctorLabel),
                   );
                 },
               ),
               TextField(
                 controller: description,
-                decoration: const InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(labelText: AppStrings.descriptionLabel),
               ),
               TextField(
                 controller: prescription,
-                decoration: const InputDecoration(labelText: 'Prescription'),
+                decoration: const InputDecoration(labelText: AppStrings.prescriptionLabel),
               ),
             ],
           ),
@@ -101,7 +102,7 @@ class EditTreatmentHistoryDialog {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: const Text(AppStrings.cancelButton),
             ),
             TextButton(
               onPressed: () {
@@ -118,7 +119,7 @@ class EditTreatmentHistoryDialog {
                     ));
                 Navigator.of(context).pop();
               },
-              child: const Text('Edit'),
+              child: const Text(AppStrings.editButton),
             ),
           ],
         );

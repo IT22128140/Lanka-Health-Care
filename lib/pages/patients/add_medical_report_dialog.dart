@@ -54,7 +54,7 @@ class AddMedicalReportDialog {
                     ));
                 Navigator.of(context).pop();
               },
-              child: const Text(AppStrings.addMedicalReportButton),
+              child: const Text(AppStrings.addButton),
             ),
           ],
         );
