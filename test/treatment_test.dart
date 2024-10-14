@@ -3,124 +3,120 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lanka_health_care/models/treatment_history.dart';
 import 'package:mockito/mockito.dart';
 
-// Create a mock for DocumentSnapshot
 class DocumentSnapshotMock extends Mock implements DocumentSnapshot {}
 
 void main() {
   group('TreatmentHistory Tests', () {
-    // Test case 1: Check if TreatmentHistory is instantiated correctly
-    test('Positive: should create TreatmentHistory with correct properties', () {
+    // Positive test cases
+
+    // Test case to ensure the `toMap` method returns the correct map structure
+    test('Positive: toMap should return correct Map', () {
       final treatmentHistory = TreatmentHistory(
-        treatment: 'Checkup',
-        date: '2023-10-14',
-        doctor: '123',
-        doctorName: 'Dr. John Doe',
-        description: 'Routine checkup',
-        prescription: 'None',
+        treatment: 'Physical Therapy',
+        date: '2024-10-14',
+        doctor: 'D12345',
+        doctorName: 'Dr. Smith',
+        description: 'Therapy for knee pain',
+        prescription: 'Exercise regimen',
       );
 
-      expect(treatmentHistory.treatment, 'Checkup');
-      expect(treatmentHistory.date, '2023-10-14');
-      expect(treatmentHistory.doctor, '123');
-      expect(treatmentHistory.doctorName, 'Dr. John Doe');
-      expect(treatmentHistory.description, 'Routine checkup');
-      expect(treatmentHistory.prescription, 'None');
-    });
-
-    // test('Negative: should throw an error when properties are missing', () {
-    //   expect(
-    //     () => TreatmentHistory(
-    //       treatment: '',  // Missing treatment
-    //       date: '2023-10-14',
-    //       doctor: '123',
-    //       doctorName: 'Dr. John Doe',
-    //       description: 'Routine checkup',
-    //       prescription: 'None',
-    //     ),
-    //     throwsA(isA<ArgumentError>()), // Adjust this according to your constructor error handling
-    //   );
-    // });
-
-    // Test case 2: Positive test for converting TreatmentHistory to a Map
-    test('Positive: toMap should return a Map with the correct data', () {
-      final treatmentHistory = TreatmentHistory(
-        treatment: 'Checkup',
-        date: '2023-10-14',
-        doctor: '123',
-        doctorName: 'Dr. John Doe',
-        description: 'Routine checkup',
-        prescription: 'None',
-      );
-
+      // Expected Map representation
       final expectedMap = {
-        'treatment': 'Checkup',
-        'date': '2023-10-14',
-        'doctor': '123',
-        'doctorName': 'Dr. John Doe',
-        'description': 'Routine checkup',
-        'prescription': 'None',
+        'treatment': 'Physical Therapy',
+        'date': '2024-10-14',
+        'doctor': 'D12345',
+        'doctorName': 'Dr. Smith',
+        'description': 'Therapy for knee pain',
+        'prescription': 'Exercise regimen',
       };
 
       expect(treatmentHistory.toMap(), expectedMap);
     });
 
-    test('Negative: toMap should not include incorrect data', () {
-      final treatmentHistory = TreatmentHistory(
-        treatment: 'Checkup',
-        date: '2023-10-14',
-        doctor: '123',
-        doctorName: 'Dr. John Doe',
-        description: 'Routine checkup',
-        prescription: 'None',
-      );
-
-      final map = treatmentHistory.toMap();
-      expect(map, isNot(contains('invalidField')));
-    });
-
-    // Test case 3: Positive test for fromSnapshot method
-    test('Positive: fromSnapshot should create TreatmentHistory from DocumentSnapshot', () {
+    test(
+        'Positive: fromSnapshot should create TreatmentHistory from valid DocumentSnapshot',
+        () {
       final snapshot = DocumentSnapshotMock();
       when(snapshot.data()).thenReturn({
-        'treatment': 'Checkup',
-        'date': '2023-10-14',
-        'doctor': '123',
-        'doctorName': 'Dr. John Doe',
-        'description': 'Routine checkup',
-        'prescription': 'None',
+        'treatment': 'Physical Therapy',
+        'date': '2024-10-14',
+        'doctor': 'D12345',
+        'doctorName': 'Dr. Smith',
+        'description': 'Therapy for knee pain',
+        'prescription': 'Exercise regimen',
       });
 
       final treatmentHistory = TreatmentHistory.fromSnapshot(snapshot);
 
-      expect(treatmentHistory.treatment, 'Checkup');
-      expect(treatmentHistory.date, '2023-10-14');
-      expect(treatmentHistory.doctor, '123');
-      expect(treatmentHistory.doctorName, 'Dr. John Doe');
-      expect(treatmentHistory.description, 'Routine checkup');
-      expect(treatmentHistory.prescription, 'None');
+      expect(treatmentHistory.treatment, 'Physical Therapy');
+      expect(treatmentHistory.date, '2024-10-14');
+      expect(treatmentHistory.doctor, 'D12345');
+      expect(treatmentHistory.doctorName, 'Dr. Smith');
+      expect(treatmentHistory.description, 'Therapy for knee pain');
+      expect(treatmentHistory.prescription, 'Exercise regimen');
     });
 
-    test('Negative: fromSnapshot should throw an error when data is incomplete', () {
+    test('Positive: validate should return true for valid TreatmentHistory',
+        () {
+      final treatmentHistory = TreatmentHistory(
+        treatment: 'Physical Therapy',
+        date: '2024-10-14',
+        doctor: 'D12345',
+        doctorName: 'Dr. Smith',
+        description: 'Therapy for knee pain',
+        prescription: 'Exercise regimen',
+      );
+
+      expect(treatmentHistory.validate(), isTrue);
+    });
+
+    // Negative test cases
+    test('Negative: constructor should throw error when treatment is empty',
+        () {
+      expect(
+        () => TreatmentHistory(
+          treatment: '', // Invalid: empty
+          date: '2024-10-14',
+          doctor: 'D12345',
+          doctorName: 'Dr. Smith',
+          description: 'Therapy for knee pain',
+          prescription: 'Exercise regimen',
+        ),
+        throwsA(isA<ArgumentError>()),
+      );
+    });
+
+    test('Negative: fromSnapshot should throw error when fields are missing',
+        () {
       final snapshot = DocumentSnapshotMock();
       when(snapshot.data()).thenReturn({
-        'treatment': 'Checkup',
-        'date': '2023-10-14',
-        // Missing doctor, doctorName, description, and prescription
+        'treatment': 'Physical Therapy',
+        'date': '2024-10-14',
+        // Missing doctor field
+        'doctorName': 'Dr. Smith',
+        'description': 'Therapy for knee pain',
+        'prescription': 'Exercise regimen',
       });
 
       expect(
         () => TreatmentHistory.fromSnapshot(snapshot),
-        throwsA(isA<TypeError>()), // Assuming that your fromSnapshot method checks for required fields
+        throwsA(
+            isA<ArgumentError>()), // Expect ArgumentError for missing fields
       );
     });
 
-    test('Negative: fromSnapshot should throw an error when snapshot data is null', () {
-      final snapshot = DocumentSnapshotMock();
-      when(snapshot.data()).thenReturn(null);
-
+    test('Negative: constructor should throw error when prescription is empty',
+        () {
       expect(
-        () => TreatmentHistory.fromSnapshot(snapshot),
-        throwsA(isA<TypeError>()), // Adjust according to your method's error handling
+        () => TreatmentHistory(
+          treatment: 'Physical Therapy',
+          date: '2024-10-14',
+          doctor: 'D12345',
+          doctorName: 'Dr. Smith',
+          description: 'Therapy for knee pain',
+          prescription: '', // Invalid: empty
+        ),
+        throwsA(isA<ArgumentError>()), // Expect constructor to throw an error
       );
     });
   });
