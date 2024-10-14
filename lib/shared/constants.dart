@@ -187,7 +187,7 @@ class AppStrings {
   static const String colonday = 'Day: ';
   static const String colonfrom = 'From: ';
   static const String colonto = 'To: ';
-  static const String editavailability = 'Edit Availability';
+  static const String editavailability = 'Edit Availability';
   static const String download = 'download';
   static const String healthcareDashboardpdf = 'healthcare_dashboard.pdf';
   static const String pwnotmatch  = 'Passwords do not match';
@@ -213,5 +213,5 @@ class AppStrings {
   static const String manageavailability = 'Manage Availability';
   static const String signout = 'Sign Out';
   static const String healthCareProDashBoard = 'Healthcare Provider Dashboard';
-  static const String recurringpayment = 'Recurring Payment';
+  static const String recurringpayment = 'Recurring Payment';
 }

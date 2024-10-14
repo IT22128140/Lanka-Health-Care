@@ -6,6 +6,7 @@ import 'package:lanka_health_care/components/my_button.dart';
 import 'package:lanka_health_care/models/availability.dart';
 import 'package:lanka_health_care/services/database.dart';
 import 'edit_availability_dialog.dart';
+import 'package:lanka_health_care/shared/constants.dart'; 
 
 class AvailabilityPage extends StatefulWidget {
   const AvailabilityPage({super.key});
@@ -26,7 +27,7 @@ class _AvailabilityState extends State<AvailabilityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Availability'),
+        title: const Text(AppStrings.availability),
       ),
       drawer: const DrawerDoctor(),
       body: Center(
@@ -44,10 +45,10 @@ class _AvailabilityState extends State<AvailabilityPage> {
                     );
                   } else if (!snapshot.hasData ||
                       (snapshot.data as QuerySnapshot).docs.isEmpty) {
-                    return const Text('No availability found',
+                    return const Text(AppStrings.notavailable,
                         style: TextStyle(color: Colors.blue, fontSize: 30));
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}',
+                    return Text('${AppStrings.error}: ${snapshot.error}',
                         style:
                             const TextStyle(color: Colors.blue, fontSize: 30));
                   } else {
@@ -60,9 +61,9 @@ class _AvailabilityState extends State<AvailabilityPage> {
                             as Map<String, dynamic>;
                         final dataid = availability.docs[index].id;
                         return ListTile(
-                          title: Text(data['date']),
+                          title: Text(data[AppStrings.date]),
                           subtitle: Text(
-                              '${data['arrivetime']} - ${data['leavetime']}'),
+                              '${data[AppStrings.arrivetime]} - ${data[AppStrings.leavetime]}'),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -99,16 +100,16 @@ class _AvailabilityState extends State<AvailabilityPage> {
                         ? null
                         : dateController.text,
                     decoration: const InputDecoration(
-                      labelText: 'Date',
+                      labelText: AppStrings.dateLabel,
                     ),
                     items: <String>[
-                      'Sunday',
-                      'Monday',
-                      'Tuesday',
-                      'Wednesday',
-                      'Thursday',
-                      'Friday',
-                      'Saturday',
+                      AppStrings.sunday,
+                      AppStrings.monday,
+                      AppStrings.tuesday,
+                      AppStrings.wednesday,
+                      AppStrings.thursday,
+                      AppStrings.friday,
+                      AppStrings.saturday,
                     ].map((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
@@ -124,7 +125,7 @@ class _AvailabilityState extends State<AvailabilityPage> {
                   TextField(
                     controller: arrivetimeController,
                     decoration: const InputDecoration(
-                      labelText: 'Arrival Time',
+                      labelText: AppStrings.arrivallabeltext,
                     ),
                     onTap: () => showTimePicker(
                       context: context,
@@ -138,7 +139,7 @@ class _AvailabilityState extends State<AvailabilityPage> {
                   TextField(
                     controller: leavetimeController,
                     decoration: const InputDecoration(
-                      labelText: 'Leave Time',
+                      labelText: AppStrings.leavelabeltext,
                     ),
                     onTap: () => showTimePicker(
                       context: context,
@@ -150,7 +151,7 @@ class _AvailabilityState extends State<AvailabilityPage> {
                     }),
                   ),
                   MyButton(
-                    text: 'Add Availability',
+                    text: AppStrings.addavailability,
                     onTap: () {
                       database.addAvailability(
                         Availability(
