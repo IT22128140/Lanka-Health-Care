@@ -1,4 +1,7 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class Appointments extends StatefulWidget {
   const Appointments({super.key});
@@ -14,10 +17,10 @@ class _AppointmentsState extends State<Appointments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Appointments'),
+        title: Text(AppStrings.appointments),
       ),
       body: const Center(
-        child: Text('Appointments Page'),
+        child: Text(AppStrings.appointmentsPage),
       ),
     );
   }

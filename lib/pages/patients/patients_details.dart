@@ -7,6 +7,7 @@ import 'package:lanka_health_care/pages/patients/edit_medical_report_dialog.dart
 import 'package:lanka_health_care/pages/patients/edit_treatment_history_dialog.dart';
 import 'package:lanka_health_care/services/database.dart';
 import 'package:lanka_health_care/pages/patients/add_medical_report_dialog.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class PatientsDetails extends StatefulWidget {
   final String patientId;
@@ -41,7 +42,7 @@ class _PatientsDetailsState extends State<PatientsDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Patients Details'),
+        title: const Text(AppStrings.patientsDetails),
       ),
       body: Column(
         children: [
@@ -57,12 +58,12 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}',
+                    return Text('${AppStrings.error} ${snapshot.error}',
                         style:
                             const TextStyle(color: Colors.blue, fontSize: 30));
                   } else if (!snapshot.hasData ||
                       snapshot.data!.data() == null) {
-                    return const Text('No patients found',
+                    return const Text(AppStrings.noPatientFound,
                         style: TextStyle(color: Colors.blue, fontSize: 30));
                   } else {
                     final patient =
@@ -71,19 +72,19 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('First Name: ${patient['firstName'] ?? 'N/A'}'),
-                        Text('Last Name: ${patient['lastName'] ?? 'N/A'}'),
+                        Text('${AppStrings.patientFirstNameLabel}: ${patient[AppStrings.patientfirstName] ?? 'N/A'}'),
+                        Text('${AppStrings.patientLastNameLabel}: ${patient[AppStrings.patientlastName] ?? 'N/A'}'),
                         Text(
-                            'Date of Birth: ${patient['dob'] != null ? DateFormat('yyyy-MM-dd').format((patient['dob'] as Timestamp).toDate()) : 'N/A'}'),
+                            '${AppStrings.patientDOBLabel}: ${patient[AppStrings.patientdob] != null ? DateFormat('yyyy-MM-dd').format((patient[AppStrings.patientdob] as Timestamp).toDate()) : 'N/A'}'),
                         Text(
-                            'Age: ${patient['dob'] != null ? calculateAge((patient['dob'] as Timestamp).toDate()) : 'N/A'}'),
-                        Text('Phone: ${patient['phone'] ?? 'N/A'}'),
+                            '${AppStrings.patientAgeLabel}: ${patient[AppStrings.patientdob] != null ? calculateAge((patient[AppStrings.patientdob] as Timestamp).toDate()) : 'N/A'}'),
+                        Text('${AppStrings.patientPhoneLabel}: ${patient[AppStrings.patientPhone] ?? 'N/A'}'),
                       ],
                     );
                   }
                 }),
           ),
-          const Text('Medical Report'),
+          const Text(AppStrings.medicalReport),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
                 stream:
@@ -96,13 +97,13 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}',
+                    return Text('${AppStrings.error} ${snapshot.error}',
                         style:
                             const TextStyle(color: Colors.blue, fontSize: 30));
                   } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return Column(
                       children: [
-                        const Text('No medical history found',
+                        const Text(AppStrings.noMedicalHistoryFound,
                             style: TextStyle(color: Colors.blue, fontSize: 30)),
                         MyButton(
                           width: 500,
@@ -110,7 +111,7 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                             AddMedicalReportDialog.showAddMedicalReportDialog(
                                 context, widget.patientId);
                           },
-                          text: 'Add Medical Report',
+                          text: AppStrings.addMedicalReport,
                         ),
                       ],
                     );
@@ -126,11 +127,11 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                  'Allergies: ${medicalHistory['allergies'] ?? 'N/A'}'),
+                                  '${AppStrings.allergiescolon} ${medicalHistory[AppStrings.allergies] ?? 'N/A'}'),
                               Text(
-                                  'Medications: ${medicalHistory['medications'] ?? 'N/A'}'),
+                                  '${AppStrings.medicationscolon} ${medicalHistory[AppStrings.medications] ?? 'N/A'}'),
                               Text(
-                                  'Surgeries: ${medicalHistory['surgeries'] ?? 'N/A'}'),
+                                  '${AppStrings.surgeriescolon} ${medicalHistory[AppStrings.surgeries] ?? 'N/A'}'),
                             ],
                           ),
                           trailing: Row(
@@ -162,7 +163,7 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                   }
                 }),
           ),
-          const Text('Treatment History'),
+          const Text(AppStrings.treatmentHistory),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
                 stream: databaseService.getTreatmentHistory(widget.patientId),
@@ -174,11 +175,11 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}',
+                    return Text('${AppStrings.error} ${snapshot.error}',
                         style:
                             const TextStyle(color: Colors.blue, fontSize: 30));
                   } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Text('No treatment history found',
+                    return const Text(AppStrings.noTreatmentHistoryFound,
                         style: TextStyle(color: Colors.blue, fontSize: 30));
                   } else {
                     return ListView.builder(
@@ -193,15 +194,15 @@ class _PatientsDetailsState extends State<PatientsDetails> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                  'Treatment: ${treatmentHistory['treatment'] ?? 'N/A'}'),
+                                  '${AppStrings.treatmentcolon}  ${treatmentHistory[AppStrings.treatment] ?? 'N/A'}'),
                               Text(
-                                  'Date: ${treatmentHistory['date'] ?? 'N/A'}'),
+                                  '${AppStrings.colondate} ${treatmentHistory[AppStrings.date] ?? 'N/A'}'),
                               Text(
-                                  'Doctor: ${treatmentHistory['doctorName'] ?? 'N/A'}'),
+                                  '${AppStrings.doctorcolon} ${treatmentHistory[AppStrings.doctorName] ?? 'N/A'}'),
                               Text(
-                                  'Description: ${treatmentHistory['description'] ?? 'N/A'}'),
+                                  '${AppStrings.descriptioncolon} ${treatmentHistory[AppStrings.description] ?? 'N/A'}'),
                               Text(
-                                  'Prescription: ${treatmentHistory['prescription'] ?? 'N/A'}'),
+                                  '${AppStrings.prescriptioncolon} ${treatmentHistory[AppStrings.prescription] ?? 'N/A'}'),
                             ],
                           ),
                           trailing: Row(
@@ -239,7 +240,7 @@ class _PatientsDetailsState extends State<PatientsDetails> {
               AddTreatmentHistoryDialog.showAddTreatmentHistoryDialog(
                   context, widget.patientId);
             },
-            text: 'Add Treatment History',
+            text: AppStrings.addTreatmentHistory,
           ),
         ],
       ),

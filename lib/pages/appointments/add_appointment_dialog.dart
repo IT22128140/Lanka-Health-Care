@@ -4,6 +4,7 @@ import 'package:image_picker_web/image_picker_web.dart';
 import 'package:lanka_health_care/models/appointment.dart';
 import 'package:lanka_health_care/models/payment.dart';
 import 'package:lanka_health_care/services/database.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 
 class AddAppointmentDialog {
   final DatabaseService databaseService = DatabaseService();
@@ -30,13 +31,13 @@ class AddAppointmentDialog {
     // Convert the available day strings into corresponding weekday numbers
     List<int> getAvailableWeekdays(dynamic availableDays) {
       Map<String, int> daysOfWeek = {
-        'Sunday': DateTime.sunday,
-        'Monday': DateTime.monday,
-        'Tuesday': DateTime.tuesday,
-        'Wednesday': DateTime.wednesday,
-        'Thursday': DateTime.thursday,
-        'Friday': DateTime.friday,
-        'Saturday': DateTime.saturday,
+        AppStrings.sunday: DateTime.sunday,
+        AppStrings.monday: DateTime.monday,
+        AppStrings.tuesday: DateTime.tuesday,
+        AppStrings.wednesday: DateTime.wednesday,
+        AppStrings.thursday: DateTime.thursday,
+        AppStrings.friday: DateTime.friday,
+        AppStrings.saturday: DateTime.saturday,
       };
 
       if (availableDays is String) {
@@ -64,11 +65,11 @@ class AddAppointmentDialog {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Add Appointment'),
+            title: const Text(AppStrings.addAppointment),
             content: Column(
               children: [
-                Text(availability['date']),
-                Text(availability['arrivetime']),
+                Text(availability[AppStrings.date]),
+                Text(availability[AppStrings.arrivetime]),
                 Autocomplete<Map<String, dynamic>>(
                   optionsBuilder: (TextEditingValue textEditingValue) async {
                     if (textEditingValue.text.isEmpty) {
@@ -77,24 +78,24 @@ class AddAppointmentDialog {
                     final patientList = await databaseService
                         .getPatientNamesByFirstName(textEditingValue.text);
                     return patientList.where((patient) {
-                      return (patient['firstName'] ?? '')
+                      return (patient[AppStrings.patientfirstName] ?? '')
                           .toLowerCase()
                           .contains(textEditingValue.text.toLowerCase());
                     }).map((doctor) => {
-                          'id': doctor['id'] ?? '',
-                          'firstName': doctor['firstName'] ?? '',
-                          'lastName': doctor['lastName'] ?? '',
+                          AppStrings.docID: doctor[AppStrings.docID] ?? '',
+                          AppStrings.doctorFirstNameLabel: doctor[AppStrings.doctorFirstNameLabel] ?? '',
+                          AppStrings.doctorLastNameLabel: doctor[AppStrings.doctorLastNameLabel] ?? '',
                         });
                   },
                   displayStringForOption: (Map<String, dynamic> option) =>
-                      (option['firstName'] ?? '') +
+                      (option[AppStrings.patientfirstName] ?? '') +
                       ' ' +
-                      (option['lastName'] ?? ''),
+                      (option[AppStrings.patientlastName] ?? ''),
                   onSelected: (Map<String, dynamic> selection) {
-                    patient.text = (selection['firstName'] ?? '') +
+                    patient.text = (selection[AppStrings.patientfirstName] ?? '') +
                         ' ' +
-                        (selection['lastName'] ?? '');
-                    patientuidController.text = selection['id'] ?? '';
+                        (selection[AppStrings.patientlastName] ?? '');
+                    patientuidController.text = selection[AppStrings.patientID] ?? '';
                   },
                   fieldViewBuilder: (BuildContext context,
                       TextEditingController textEditingController,
@@ -103,19 +104,19 @@ class AddAppointmentDialog {
                     return TextField(
                       controller: textEditingController,
                       focusNode: focusNode,
-                      decoration: const InputDecoration(labelText: 'Patient'),
+                      decoration: const InputDecoration(labelText: AppStrings.patient),
                     );
                   },
                 ),
                 TextField(
                   controller: dateController,
-                  decoration: const InputDecoration(hintText: 'Date'),
+                  decoration: const InputDecoration(hintText: AppStrings.dateLabel),
                   onTap: () async {
                     FocusScope.of(context).requestFocus(FocusNode());
 
                     // Handle both string (single day) and list of strings (multiple days)
                     List<int> availableWeekdays =
-                        getAvailableWeekdays(availability['date']);
+                        getAvailableWeekdays(availability[AppStrings.date]);
 
                     // Get the next available date based on available weekdays
                     DateTime initialDate =
@@ -142,39 +143,39 @@ class AddAppointmentDialog {
                 DropdownButtonFormField(
                     items: const [
                       DropdownMenuItem(
-                          value: 'Recurring', child: Text('Recurring')),
+                          value: AppStrings.recurring, child: Text(AppStrings.recurring)),
                       DropdownMenuItem(
-                          value: 'Completed', child: Text('Completed')),
+                          value: AppStrings.completed, child: Text(AppStrings.completed)),
                       DropdownMenuItem(
-                          value: 'Pending', child: Text('Pending')),
+                          value: AppStrings.pending, child: Text(AppStrings.pending)),
                     ],
                     value: paymentStatusController.text.isEmpty
-                        ? 'Recurring'
-                        : (['Recurring', 'Completed', 'Pending']
+                        ? AppStrings.recurring
+                        : ([AppStrings.recurring, AppStrings.completed, AppStrings.pending]
                                 .contains(paymentStatusController.text)
                             ? paymentStatusController.text
-                            : 'Recurring'),
+                            : AppStrings.recurring),
                     onChanged: (value) {
                       paymentStatusController.text = value.toString();
                     }),
-                const Text('Payment',
+                const Text(AppStrings.payment,
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
                 TextField(
                   controller: bankNameController,
-                  decoration: const InputDecoration(hintText: 'Bank Name'),
+                  decoration: const InputDecoration(hintText: AppStrings.bankName),
                 ),
                 TextField(
                   controller: accountNumberController,
-                  decoration: const InputDecoration(hintText: 'Account Number'),
+                  decoration: const InputDecoration(hintText: AppStrings.accountNumber),
                 ),
                 TextField(
                   controller: accountNameController,
-                  decoration: const InputDecoration(hintText: 'Account Name'),
+                  decoration: const InputDecoration(hintText: AppStrings.accountName),
                 ),
                 TextField(
                   controller: amountController,
-                  decoration: const InputDecoration(hintText: 'Amount'),
+                  decoration: const InputDecoration(hintText: AppStrings.amount),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -191,7 +192,7 @@ class AddAppointmentDialog {
                 ),
                 if (!isImageSelected)
                   const Text(
-                    'Upload slip',
+                    AppStrings.uploadSlip,
                     style: TextStyle(color: Color.fromARGB(255, 250, 230, 35)),
                   ),
               ],
@@ -201,7 +202,7 @@ class AddAppointmentDialog {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text('Cancel')),
+                  child: const Text(AppStrings.cancelButton)),
               TextButton(
                   onPressed: isUploading
                       ? null
@@ -212,16 +213,16 @@ class AddAppointmentDialog {
 
                           Reference refImages = FirebaseStorage.instance.ref();
                           Reference refImagesDir =
-                              refImages.child('slip_images');
+                              refImages.child(AppStrings.slipImages);
                           Reference referenceImageToUpload =
-                              refImagesDir.child('$uniqueName.jpg');
+                              refImagesDir.child('$uniqueName${AppStrings.jpg}');
                           try {
                             await referenceImageToUpload.putData(image);
                             String downloadUrl =
                                 await referenceImageToUpload.getDownloadURL();
                             depositSlipController.text = downloadUrl;
                           } catch (e) {
-                            debugPrint('Error uploading image: $e');
+                            debugPrint('${AppStrings.erroUploadingImage} $e');
                           }
                           if (context.mounted) {
                             await databaseService.createAppointmentAndPayment(
@@ -229,8 +230,8 @@ class AddAppointmentDialog {
                                   doctoruid: doctorId,
                                   patientuid: patientuidController.text,
                                   date: dateController.text,
-                                  time: availability['arrivetime'],
-                                  status: 'Pending',
+                                  time: availability[AppStrings.arrivetime],
+                                  status: AppStrings.pending,
                                   paymentStatus: paymentStatusController.text,
                                 ),
                                 Payment(
@@ -246,7 +247,7 @@ class AddAppointmentDialog {
                           }
                           isUploading = false;
                         },
-                  child: const Text('Add'))
+                  child: const Text(AppStrings.addButton)),
             ],
           );
         });
