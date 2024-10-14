@@ -14,7 +14,30 @@ class Appointment {
       required this.date,
       required this.time,
       required this.status,
-      required this.paymentStatus,});
+      required this.paymentStatus,}) {
+    validate();
+  }
+
+  void validate() {
+    if (doctoruid.isEmpty) {
+      throw ArgumentError('Doctor UID cannot be empty');
+    }
+    if (patientuid.isEmpty) {
+      throw ArgumentError('Patient UID cannot be empty');
+    }
+    if (date.isEmpty) {
+      throw ArgumentError('Date cannot be empty');
+    }
+    if (time.isEmpty) {
+      throw ArgumentError('Time cannot be empty');
+    }
+    if (status.isEmpty) {
+      throw ArgumentError('Status cannot be empty');
+    }
+    if (paymentStatus.isEmpty) {
+      throw ArgumentError('Payment Status cannot be empty');
+    }
+  }
 
   Map<String, dynamic> toMap() {
     return {

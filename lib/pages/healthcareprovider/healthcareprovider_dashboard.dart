@@ -19,8 +19,12 @@ class _HealthcareproviderDashboardState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Healthcare Provider Dashboard'),
+        backgroundColor: Colors.white,
+        elevation: 5.0, // This adds a shadow to the AppBar
+        shadowColor: Colors.grey,
       ),
       drawer: const DrawerHcp(),
       body: Column(
