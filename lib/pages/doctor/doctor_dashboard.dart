@@ -34,7 +34,7 @@ class DoctorDashboard extends StatelessWidget {
                 StreamBuilder(
                     stream: database.getAppointmentsByDoctorUidAndDate(
                         FirebaseAuth.instance.currentUser!.uid,
-                        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}"),
+                        "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, AppStrings.zero)}-${DateTime.now().day.toString().padLeft(2, AppStrings.zero)}"),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(

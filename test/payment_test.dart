@@ -1,109 +1,117 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lanka_health_care/models/payment.dart';
+import 'package:mockito/mockito.dart';
+
+class DocumentSnapshotMock extends Mock implements DocumentSnapshot {}
 
 void main() {
-  group('Payment toMap,Payment Field Validations,Payment Date Formattting', () {
-    //Test Case 1 : Positive test case for toMap method
-    test('Positive Case: Correctly converts to map', () {
+  group('Payment Class Tests', () {
+    // Test for toMap method
+    test('toMap method returns correct map', () {
       final payment = Payment(
-        bankName: 'Test Bank',
+        bankName: 'Bank of Flutter',
         accountNumber: '1234567890',
         accountName: 'John Doe',
-        amount: '100.00',
-        date: '2023-10-14',
-        depositSlip: 'slip.jpg',
+        amount: '100.50',
+        date: '2024-10-14',
+        depositSlip: 'slip123.png',
       );
 
       final map = payment.toMap();
 
-      expect(map, {
-        'bankName': 'Test Bank',
-        'accountNumber': '1234567890',
-        'accountName': 'John Doe',
-        'amount': '100.00',
-        'date': '2023-10-14',
-        'depositSlip': 'slip.jpg',
-      });
+      expect(map['bankName'], 'Bank of Flutter');
+      expect(map['accountNumber'], '1234567890');
+      expect(map['accountName'], 'John Doe');
+      expect(map['amount'], '100.50');
+      expect(map['date'], '2024-10-14');
+      expect(map['depositSlip'], 'slip123.png');
     });
 
-    //Test Case 1 : Negative test case for toMap method
-    test('Negative Case: Map is incorrect if a field is null', () {
-      final payment = Payment(
-        bankName: '',
-        accountNumber: '',
-        accountName: 'John Doe',
-        amount: '',
-        date: '2023-10-14',
-        depositSlip: 'slip.jpg',
-      );
+    // Test for fromSnapshot method
+    test('fromSnapshot method creates Payment from DocumentSnapshot', () {
+      final snapshot = DocumentSnapshotMock();
+      when(snapshot['bankName']).thenReturn('Bank of Flutter');
+      when(snapshot['accountNumber']).thenReturn('1234567890');
+      when(snapshot['accountName']).thenReturn('John Doe');
+      when(snapshot['amount']).thenReturn('100.50');
+      when(snapshot['date']).thenReturn('2024-10-14');
+      when(snapshot['depositSlip']).thenReturn('slip123.png');
 
-      final map = payment.toMap();
+      final payment = Payment.fromSnapshot(snapshot);
 
-      expect(map['bankName'], isEmpty);
-      expect(map['accountNumber'], isEmpty);
-      expect(map['amount'], isEmpty);
+      expect(payment.bankName, 'Bank of Flutter');
+      expect(payment.accountNumber, '1234567890');
+      expect(payment.accountName, 'John Doe');
+      expect(payment.amount, '100.50');
+      expect(payment.date, '2024-10-14');
+      expect(payment.depositSlip, 'slip123.png');
     });
 
-    //Test Case 2 : Positive test case for field validations
-    test('Positive Case: All fields are not-null and correctly assigned', () {
+    // Test for isValid method
+    test('isValid returns true for valid payment details', () {
       final payment = Payment(
-        bankName: 'Test Bank',
+        bankName: 'Bank of Flutter',
         accountNumber: '1234567890',
         accountName: 'John Doe',
-        amount: '100.00',
-        date: '2023-10-14',
-        depositSlip: 'slip.jpg',
+        amount: '100.50',
+        date: '2024-10-14',
+        depositSlip: 'slip123.png',
       );
 
-      expect(payment.bankName, isNotEmpty);
-      expect(payment.accountNumber, isNotEmpty);
-      expect(payment.amount, isNotEmpty);
-      expect(payment.date, isNotEmpty);
-      expect(payment.depositSlip, isNotEmpty);
+      expect(payment.isValid(), true); // Expecting valid payment details to return true
     });
 
-    //Test Case 2 : Negative test case for field validations
-    test('Negative Case: Fields with empty strings fail validation', () {
+    test('isValid returns false for invalid account number', () {
       final payment = Payment(
-        bankName: '',
-        accountNumber: '',
+        bankName: 'Bank of Flutter',
+        accountNumber: '123', // Invalid account number
         accountName: 'John Doe',
-        amount: '',
-        date: '2023-10-14',
-        depositSlip: 'slip.jpg',
+        amount: '100.50',
+        date: '2024-10-14',
+        depositSlip: 'slip123.png',
       );
 
-      expect(payment.bankName, isEmpty);
-      expect(payment.accountNumber, isEmpty);
-      expect(payment.amount, isEmpty);
+      expect(payment.isValid(), false); // Expecting invalid account number to return false
     });
 
-    //Test Case 3 : Positive test case for date formatting
-     test('Positive Case: Valid date should be formatted correctly', () {
+    test('isValid returns false for empty bank name', () {
       final payment = Payment(
-        bankName: 'Test Bank',
+        bankName: '', // Empty bank name
         accountNumber: '1234567890',
         accountName: 'John Doe',
-        amount: '100.00',
-        date: '2023-10-14', // Valid date format
-        depositSlip: 'slip.jpg',
+        amount: '100.50',
+        date: '2024-10-14',
+        depositSlip: 'slip123.png',
       );
-      expect(payment.date, matches(RegExp(r'^\d{4}-\d{2}-\d{2}$'))); // YYYY-MM-DD
+
+      expect(payment.isValid(), false); // Expecting empty bank name to return false
     });
 
-    //Test Case 3 : Negative test case for date formatting
-    // test('Negative Case: Invalid date format should throw an error', () {
-    //   expect(
-    //     () => Payment(
-    //       bankName: 'Test Bank',
-    //       accountNumber: '1234567890',
-    //       accountName: 'John Doe',
-    //       amount: '100.00',
-    //       date: 'Invalid Date', // Invalid date format
-    //       depositSlip: 'slip.jpg',
-    //     ),
-    //     throwsA(isA<FormatException>()), // Assuming you throw an error for invalid date
-    //   );
-    // });
+    test('isValid returns false for negative amount', () {
+      final payment = Payment(
+        bankName: 'Bank of Flutter',
+        accountNumber: '1234567890',
+        accountName: 'John Doe',
+        amount: '-100.50', // Negative amount
+        date: '2024-10-14',
+        depositSlip: 'slip123.png',
+      );
+
+      expect(payment.isValid(), false); // Expecting negative amount to return false
+    });
+
+    test('isValid returns false for empty deposit slip', () {
+      final payment = Payment(
+        bankName: 'Bank of Flutter',
+        accountNumber: '1234567890',
+        accountName: 'John Doe',
+        amount: '100.50',
+        date: '2024-10-14',
+        depositSlip: '', // Empty deposit slip
+      );
+
+      expect(payment.isValid(), false); // Expecting empty deposit slip to return false
+    });
   });
 }

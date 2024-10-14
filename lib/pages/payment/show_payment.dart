@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lanka_health_care/models/payment.dart';
 import 'package:lanka_health_care/services/database.dart';
+import 'package:lanka_health_care/shared/constants.dart';
 import 'add_payment_dialog.dart';
 import 'edit_payment_dialog.dart';
 
@@ -31,7 +32,7 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('View Payment'),
+      title: const Text(AppStrings.viewPayment),
       content: SizedBox(
         height: 400, // Adjust the height as needed
         width: 300, // Adjust the width as needed
@@ -39,7 +40,7 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             DropdownButton<String>(
-              items: <String>['Recurring', 'Completed', 'Pending']
+              items: <String>[AppStrings.recurring, AppStrings.completed, AppStrings.pending]
                   .map((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -63,9 +64,9 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
+                    return Text('${AppStrings.error} ${snapshot.error}');
                   } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Text('No Payment found');
+                    return const Text(AppStrings.noPaymentFound);
                   } else {
                     return ListView.builder(
                       itemCount: snapshot.data!.docs.length,
@@ -76,11 +77,11 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Bank Name: ${payment.bankName}'),
-                            Text('Account Number: ${payment.accountNumber}'),
-                            Text('Account Name: ${payment.accountName}'),
-                            Text('Amount: ${payment.amount}'),
-                            Text('Date: ${payment.date}'),
+                            Text('${AppStrings.colonbankName} ${payment.bankName}'),
+                            Text('${AppStrings.colonaccountNumber} ${payment.accountNumber}'),
+                            Text('${AppStrings.colonaccountName} ${payment.accountName}'),
+                            Text('${AppStrings.colonamount} ${payment.amount}'),
+                            Text('${AppStrings.colondate} ${payment.date}'),
                             Image.network(
                               payment.depositSlip,
                               width: 100,
@@ -108,8 +109,8 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
                               },
                               errorBuilder: (BuildContext context, Object error,
                                   StackTrace? stackTrace) {
-                                debugPrint('Error loading image: $error');
-                                debugPrint('Stack trace: $stackTrace');
+                                debugPrint('${AppStrings.errLoadingImage} $error');
+                                debugPrint('${AppStrings.stackTrace} $stackTrace');
                                 return const Column(
                                   children: [
                                     Icon(
@@ -118,7 +119,7 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
                                       size: 100,
                                     ),
                                     Text(
-                                      'Failed to load image',
+                                      AppStrings.failedLoadImage,
                                       style: TextStyle(color: Colors.red),
                                     ),
                                   ],
@@ -130,7 +131,7 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
                                 EditPaymentDialog().show(context,
                                     widget.appointmentId, payment, paymentId);
                               },
-                              child: const Text('Edit Payment'),
+                              child: const Text(AppStrings.editPayment),
                             ),
                           ],
                         );
@@ -148,15 +149,15 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
           onPressed: () {
             database.deletePayment(widget.appointmentId, paymentId);
             database.updateAppointmentPaymentStatus(
-                widget.appointmentId, 'Pending');
+                widget.appointmentId, AppStrings.pending);
           },
-          child: const Text('Delete'),
+          child: const Text(AppStrings.deleteButton),
         ),
         TextButton(
           onPressed: () {
             AddPaymentDialog().show(context, widget.appointmentId);
           },
-          child: const Text('Add Payment'),
+          child: const Text(AppStrings.addPayment),
         ),
         TextButton(
           onPressed: () {
@@ -164,7 +165,7 @@ class _ViewPaymentDialogState extends State<ViewPaymentDialog> {
               Navigator.of(context).pop();
             }
           },
-          child: const Text('Close'),
+          child: const Text(AppStrings.close),
         ),
       ],
     );
