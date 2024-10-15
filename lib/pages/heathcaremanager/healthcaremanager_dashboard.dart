@@ -20,13 +20,14 @@ class HealthcaremanagerDashboard extends StatefulWidget {
 
 class _HealthcaremanagerDashboardState
     extends State<HealthcaremanagerDashboard> {
+      // Create an instance of the DatabaseService class
   DatabaseService database = DatabaseService();
 
   List<Color> gradientColors = [
     Colors.yellow,
     Colors.blue,
   ];
-
+// Create global keys for the charts
   GlobalKey monthlyChartKey = GlobalKey();
   GlobalKey weeklyChartKey = GlobalKey();
   GlobalKey dailyChartKey = GlobalKey();
@@ -47,17 +48,19 @@ class _HealthcaremanagerDashboardState
     }
   }
 
+// Function to generate the PDF and download it
   Future<void> generatePdfAndDownload() async {
     // Load the custom font (Nunito or Roboto)
     final fontData = await rootBundle.load('lib/fonts/Nunito-Regular.ttf');
     final ttf = pw.Font.ttf(fontData);
 
     final pdf = pw.Document();
-
+  // Capture the charts as images
     final monthlyChartImage = await _captureChart(monthlyChartKey);
     final weeklyChartImage = await _captureChart(weeklyChartKey);
     final dailyChartImage = await _captureChart(dailyChartKey);
 
+    // Add a page to the PDF
     pdf.addPage(
       pw.Page(
         build: (pw.Context context) {
@@ -122,20 +125,39 @@ class _HealthcaremanagerDashboardState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      // Add an app bar
       appBar: AppBar(
         title: const Text(AppStrings.healthCareManDashBoard),
+        backgroundColor: Colors.white,
+        elevation: 5.0,
+        shadowColor: Colors.grey,
       ),
+      // Add a drawer
       drawer: const DrawerHcm(),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           children: [
+            const SizedBox(
+              height: 30,
+            ),
+            // Download as PDF button
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  side:
+                      const BorderSide(color: Colors.blue),
+                ),
+              ),
               onPressed: () async {
-                await generatePdfAndDownload(); // Use this function to generate and download the PDF on web
+                await generatePdfAndDownload();
               },
               child: const Text(AppStrings.downloadAsPDF),
             ),
+            // Add a row to display the charts
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -165,17 +187,21 @@ class _HealthcaremanagerDashboardState
                               top: 24,
                               bottom: 12,
                             ),
+                            // FutureBuilder to load the chart data
                             child: FutureBuilder<LineChartData>(
                               future: mainData(),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
+                                      // Show a progress indicator while loading
                                   return const Center(
                                       child: CircularProgressIndicator());
                                 } else if (snapshot.hasError) {
+                                  // Show an error message if there is an error
                                   return const Center(
                                       child: Text(AppStrings.errorLoadingData));
                                 } else {
+                                  // Show the chart if the data is loaded
                                   return LineChart(snapshot.data!);
                                 }
                               },
@@ -185,6 +211,7 @@ class _HealthcaremanagerDashboardState
                       ),
                     ],
                   ),
+                  // Add a column for the weekly appointments chart
                   RepaintBoundary(
                     key: weeklyChartKey,
                     child: Column(
@@ -199,6 +226,7 @@ class _HealthcaremanagerDashboardState
                             ),
                           ),
                         ),
+                        // Weekly Appointments Chart
                         SizedBox(
                           height: 500,
                           width: 700,
@@ -209,17 +237,21 @@ class _HealthcaremanagerDashboardState
                               top: 24,
                               bottom: 12,
                             ),
+                            // FutureBuilder to load the chart data
                             child: FutureBuilder<LineChartData>(
                               future: weeklyData(),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
+                                      // Show a progress indicator while loading
                                   return const Center(
                                       child: CircularProgressIndicator());
                                 } else if (snapshot.hasError) {
+                                  // Show an error message if there is an error
                                   return const Center(
                                       child: Text(AppStrings.errorLoadingData));
                                 } else {
+                                  // Show the chart if the data is loaded
                                   return LineChart(snapshot.data!);
                                 }
                               },
@@ -232,18 +264,20 @@ class _HealthcaremanagerDashboardState
                 ],
               ),
             ),
+            // Add a column for the daily appointments chart
             Column(
               children: [
                 const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
-                   AppStrings.dailyAppoinments,
+                    AppStrings.dailyAppoinments,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
+                // Daily Appointments Chart
                 RepaintBoundary(
                   key: dailyChartKey,
                   child: SizedBox(
@@ -261,12 +295,15 @@ class _HealthcaremanagerDashboardState
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
+                                // Show a progress indicator while loading
                             return const Center(
                                 child: CircularProgressIndicator());
                           } else if (snapshot.hasError) {
+                            // Show an error message if there is an error
                             return const Center(
                                 child: Text(AppStrings.errorLoadingData));
                           } else {
+                            // Show the chart if the data is loaded
                             return LineChart(snapshot.data!);
                           }
                         },
@@ -282,6 +319,7 @@ class _HealthcaremanagerDashboardState
     );
   }
 
+// Widget to display the titles on the charts
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
@@ -336,6 +374,7 @@ class _HealthcaremanagerDashboardState
     );
   }
 
+// Widget to display the titles on the charts
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
@@ -359,20 +398,33 @@ class _HealthcaremanagerDashboardState
     return Text(text, style: style, textAlign: TextAlign.left);
   }
 
+// Function to get the data for the charts
   Future<LineChartData> mainData() async {
     String year = DateTime.now().year.toString();
-    double jan = (await database.getAppointmentCountByMonth('$year${AppStrings.year01}'));
-    double feb = (await database.getAppointmentCountByMonth('$year${AppStrings.year02}'));
-    double mar = (await database.getAppointmentCountByMonth('$year${AppStrings.year03}'));
-    double apr = (await database.getAppointmentCountByMonth('$year${AppStrings.year04}'));
-    double may = (await database.getAppointmentCountByMonth('$year${AppStrings.year05}'));
-    double jun = (await database.getAppointmentCountByMonth('$year${AppStrings.year06}'));
-    double jul = (await database.getAppointmentCountByMonth('$year${AppStrings.year07}'));
-    double aug = (await database.getAppointmentCountByMonth('$year${AppStrings.year08}'));
-    double sep = (await database.getAppointmentCountByMonth('$year${AppStrings.year09}'));
-    double oct = (await database.getAppointmentCountByMonth('$year${AppStrings.year10}'));
-    double nov = (await database.getAppointmentCountByMonth('$year${AppStrings.year11}'));
-    double dec = (await database.getAppointmentCountByMonth('$year${AppStrings.year12}'));
+    double jan = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year01}'));
+    double feb = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year02}'));
+    double mar = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year03}'));
+    double apr = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year04}'));
+    double may = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year05}'));
+    double jun = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year06}'));
+    double jul = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year07}'));
+    double aug = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year08}'));
+    double sep = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year09}'));
+    double oct = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year10}'));
+    double nov = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year11}'));
+    double dec = (await database
+        .getAppointmentCountByMonth('$year${AppStrings.year12}'));
 
     return LineChartData(
       gridData: FlGridData(
@@ -464,29 +516,35 @@ class _HealthcaremanagerDashboardState
     );
   }
 
+// Function to get the data for the weekly appointments chart
   Future<LineChartData> weeklyData() async {
     String yearMonth =
         "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, AppStrings.zero)}";
 
 // Week 1: From day 1 to day 7
     double week1 = (await database.getAppointmentCountByWeek(
-        '$yearMonth${AppStrings.yearmonth01}', '$yearMonth${AppStrings.yearmonth07}'));
+        '$yearMonth${AppStrings.yearmonth01}',
+        '$yearMonth${AppStrings.yearmonth07}'));
 
 // Week 2: From day 8 to day 14
     double week2 = (await database.getAppointmentCountByWeek(
-        '$yearMonth${AppStrings.yearmonth08}', '$yearMonth${AppStrings.yearmonth14}'));
+        '$yearMonth${AppStrings.yearmonth08}',
+        '$yearMonth${AppStrings.yearmonth14}'));
 
 // Week 3: From day 15 to day 21
     double week3 = (await database.getAppointmentCountByWeek(
-        '$yearMonth${AppStrings.yearmonth15}', '$yearMonth${AppStrings.yearmonth21}'));
+        '$yearMonth${AppStrings.yearmonth15}',
+        '$yearMonth${AppStrings.yearmonth21}'));
 
 // Week 4: From day 22 to day 28
     double week4 = (await database.getAppointmentCountByWeek(
-        '$yearMonth${AppStrings.yearmonth22}', '$yearMonth${AppStrings.yearmonth28}'));
+        '$yearMonth${AppStrings.yearmonth22}',
+        '$yearMonth${AppStrings.yearmonth28}'));
 
 // Week 5: From day 29 to the end of the month (adjust to handle months with different numbers of days)
     double week5 = (await database.getAppointmentCountByWeek(
-        '$yearMonth${AppStrings.yearmonth29}', '$yearMonth${AppStrings.yearmonth31}'));
+        '$yearMonth${AppStrings.yearmonth29}',
+        '$yearMonth${AppStrings.yearmonth31}'));
 
     return LineChartData(
       gridData: FlGridData(
@@ -602,6 +660,7 @@ class _HealthcaremanagerDashboardState
     );
   }
 
+// Function to get the data for the daily appointments chart
   Future<LineChartData> dailyData() async {
     String yearMonthDay =
         "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";

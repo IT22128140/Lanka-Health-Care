@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:lanka_health_care/components/drawers/drawer_HCP.dart';
 import 'package:flutter_web_qrcode_scanner/flutter_web_qrcode_scanner.dart';
 
+import '../../shared/constants.dart';
+
 class HealthcareproviderDashboard extends StatefulWidget {
   const HealthcareproviderDashboard({Key? key}) : super(key: key);
 
@@ -12,6 +14,7 @@ class HealthcareproviderDashboard extends StatefulWidget {
 
 class _HealthcareproviderDashboardState
     extends State<HealthcareproviderDashboard> {
+      // Initialize variables
   String? _data;
   bool _restartScanner = true;
   bool _isNavigating = false;
@@ -19,14 +22,21 @@ class _HealthcareproviderDashboardState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      // App bar
       appBar: AppBar(
-        title: const Text('Healthcare Provider Dashboard'),
+        title: const Text(AppStrings.healthCareProDashBoard),
+        backgroundColor: Colors.white,
+        elevation: 5.0,
+        shadowColor: Colors.grey,
       ),
+      // Drawer
       drawer: const DrawerHcp(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // Display the scanned data
           _data == null
               ? Container()
               : Center(
@@ -36,6 +46,7 @@ class _HealthcareproviderDashboardState
                     textAlign: TextAlign.center,
                   ),
                 ),
+                // Display the QR code scanner
           if (_restartScanner)
             FlutterWebQrcodeScanner(
               cameraDirection: CameraDirection.back,
@@ -63,34 +74,36 @@ class _HealthcareproviderDashboardState
               stopOnFirstResult: true,
               width: MediaQuery.of(context).size.width * 0.8,
               height: MediaQuery.of(context).size.height * 0.8,
+              // Handle errors
               onError: (error) {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: const Text('Error'),
-                      content: Text('An error occurred: $error'),
+                      title: const Text(AppStrings.error2),
+                      content: Text('${AppStrings.error3} $error'),
                       actions: [
                         TextButton(
                           onPressed: Navigator.of(context).pop,
-                          child: const Text('OK'),
+                          child: const Text(AppStrings.ok),
                         ),
                       ],
                     );
                   },
                 );
               },
+              // Handle permission denied error
               onPermissionDeniedError: () {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: const Text('Permission Denied'),
+                    title: const Text(AppStrings.permissionDenied),
                     content: const Text(
-                        'Please allow camera permission to scan QR code'),
+                        AppStrings.cameraPermission),
                     actions: [
                       TextButton(
                         onPressed: Navigator.of(context).pop,
-                        child: const Text('OK'),
+                        child: const Text(AppStrings.ok),
                       ),
                     ],
                   ),
