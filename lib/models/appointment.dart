@@ -26,7 +26,7 @@ class Appointment {
  // Method to validate the fields of the Appointment class
   void validate() {
     if (doctoruid.isEmpty) {
-      throw ArgumentError();// Throws error if doctoruid is empty
+      throw ArgumentError(AppStrings.docUidValidation);// Throws error if doctoruid is empty
     }
     if (patientuid.isEmpty) {
       throw ArgumentError(AppStrings.patientUidValidation);// Throws error if patientuid is empty with a specific message
