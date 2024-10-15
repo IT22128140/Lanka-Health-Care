@@ -229,4 +229,71 @@ class AppStrings {
   static const String stackTrace = 'Stack trace:';
   static const String failedLoadImage = 'Failed to load image';
   static const String close = 'Close';
+  static const String dateValidation = 'Please select a date';
+  static const String arrivalTimeValidation = 'Please select an arrival time';
+  static const String leaveTimeValidation = 'Please select a leave time';
+  static const String patientValidation = 'Please select a patient';
+  static const String banktypeValidation = 'Please enter the bank name';
+  static const String accountNumberNullError =
+      'Please enter the account number';
+  static const String accountNumberValidation = 'Enter a valid account number';
+  static const String accountNameValidation = 'Please enter the account name';
+  static const String amountNullError = 'Please enter the amount';
+  static const String amountValidation = 'Enter a valid amount';
+  static const String imageValidation = 'Please upload an image';
+  static const String pleaseEnterAllergy = 'Please enter allergies';
+  static const String pleaseEnterMedications = 'Please enter medications';
+  static const String pleaseEnterSurgeries = 'Please enter surgeries';
+  static const String pleaseEnterTreatments = 'Please enter a treatment';
+  static const String pleaseSelectDoctor = 'Please select a doctor';
+  static const String pleaseEnterDescription = 'Please enter a description';
+  static const String pleaseEnterPrescription = 'Please enter a prescription';
+  static const String pleaseEnterBankDetails = 'Please enter the bank name';
+  static const String pleaseEnterAccountNumber =
+      'Please enter the account number';
+  static const String pleaseEnterAccountName = 'Please enter the account name';
+  static const String pleaseEnterAmount = 'Please enter the amount';
+  static const String pleaseEnterValidAmount = 'Please enter a valid amount';
+  static const String firstNameError = 'Please enter the first name';
+  static const String lastNameError = 'Please enter the last name';
+  static const String dobError = 'Please enter the date of birth';
+  static const String phoneError = 'Please enter the phone number';
+  static const String genderError = 'Please select the gender';
+  static const String downloadedQR = 'QR Code downloaded!';
+  static const String patientUidValidation = 'Patient UID cannot be empty';
+  static const String timeValidation = 'Time cannot be empty';
+  static const String statusValidation = 'Status cannot be empty';
+  static const String paymentStatusValidation =
+      'Payment Status cannot be empty';
+  static const String doctorUid = 'doctoruid';
+  static const String dateError = 'Date cannot be empty';
+  static const String arrivalTimeError = 'Arrival time cannot be empty';
+  static const String leaveTimeError = 'Leave time cannot be empty';
+  static const String bankname = 'bankName';
+  static const String accnumber = 'accountNumber';
+  static const String accname = 'accountName';
+  static const String amt = 'amount';
+  static const String depositSlip = 'depositSlip';
+  static const String firstnameEmpty = 'First name cannot be empty';
+  static const String lastnameEmpty = 'Last name cannot be empty';
+  static const String dobNotFuture = 'Date of birth cannot be in the future';
+  static const String phoneInvalid = 'Invalid phone number';
+  static const String other = 'Other';
+  static const String genderInvalid = 'Invalid gender';
+  static const String treatmentValidation = 'Treatment cannot be empty.';
+  static const String doctorValidation = 'Doctor cannot be empty.';
+  static const String descriptionValidation = 'Description cannot be empty.';
+  static const String prescriptionValidation = 'Prescription cannot be empty.';
+  static const String doctorNameValidation = 'Doctor Name cannot be empty.';
+  static const String requiredFieldsMissing =
+      'One or more required fields are missing.';
+  static const String error2 = 'Error';
+  static const String error3 = 'An error occurred: ';
+  static const String ok = 'OK';
+  static const String permissionDenied = 'Permission Denied';
+  static const String cameraPermission =
+      'Please allow camera permission to scan QR code';
+  static const String notAvailable = 'N/A';
+  static const String qrCodePng = 'qr_code.png';
+  static const String none = 'none';
 }

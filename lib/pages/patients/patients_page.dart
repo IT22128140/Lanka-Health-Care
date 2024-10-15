@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lanka_health_care/components/drawers/drawer_custom.dart';
 import 'package:lanka_health_care/components/my_button.dart';
 import 'package:lanka_health_care/models/patients.dart';
+import 'package:lanka_health_care/pages/patients/edit_patient_details.dart';
 import 'package:lanka_health_care/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -16,32 +17,40 @@ class PatientsPage extends StatefulWidget {
 }
 
 class _PatientsState extends State<PatientsPage> {
+  // Initialize the database service
   final DatabaseService databaseService = DatabaseService();
 
+// Define controllers for the text fields
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController dobController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
 
+  final EditPatientDetails editPatientDetails = EditPatientDetails();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Add the app bar
       appBar: AppBar(
         title: const Text(AppStrings.patientsDetails),
         backgroundColor: Colors.white,
-        elevation: 5.0, // This adds a shadow to the AppBar
+        elevation: 5.0,
         shadowColor: Colors.grey,
       ),
+      // Add the drawer
       drawer: widget.drawer,
       body: Center(
         child: Row(
           children: [
+            // List of patients
             Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                     stream: databaseService.getPatients(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
+                        // Show loading spinner if the data is loading
                         return const Center(
                           child: CircularProgressIndicator(
                             valueColor:
@@ -50,14 +59,17 @@ class _PatientsState extends State<PatientsPage> {
                         );
                       } else if (!snapshot.hasData ||
                           (snapshot.data as QuerySnapshot).docs.isEmpty) {
+                            // Show message if no patients are found
                         return const Text(AppStrings.noPatientFound,
                             style: TextStyle(color: Colors.blue, fontSize: 30));
                       } else if (snapshot.hasError) {
+                        // Show error message if there is an error
                         return Text('${AppStrings.error} ${snapshot.error}',
                             style: const TextStyle(
                                 color: Colors.blue, fontSize: 30));
                       } else {
                         {
+                          // Show the list of patients
                           final QuerySnapshot patients =
                               snapshot.data as QuerySnapshot;
 
@@ -67,6 +79,7 @@ class _PatientsState extends State<PatientsPage> {
                                 final patient = patients.docs[index];
                                 final patientId = patients.docs[index].id;
                                 return ListTile(
+                                  // Add patient details to the list
                                   title: Text(
                                       patient[AppStrings.patientfirstName] +
                                           ' ' +
@@ -85,6 +98,7 @@ class _PatientsState extends State<PatientsPage> {
                                           '${AppStrings.patientGenderLabel}: ${patient[AppStrings.patientGender]}'),
                                     ],
                                   ),
+                                  // Add trailing icons for view, edit, and delete
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -99,7 +113,7 @@ class _PatientsState extends State<PatientsPage> {
                                       IconButton(
                                         icon: const Icon(Icons.edit),
                                         onPressed: () {
-                                          _showEditDialog(
+                                          EditPatientDetails.showEditDialog(
                                               context, patient, patientId);
                                         },
                                       ),
@@ -124,10 +138,11 @@ class _PatientsState extends State<PatientsPage> {
                   padding: const EdgeInsets.all(30),
                   child: Container(
                     color: const Color.fromARGB(255, 229, 246, 255),
-                    constraints: BoxConstraints(maxWidth: 500),
+                    constraints: const BoxConstraints(maxWidth: 500),
                     child: Column(
                       children: [
                         const SizedBox(height: 20),
+                        // Add the form to add a new patient
                         const Text(
                           AppStrings.addPtient,
                           style: TextStyle(
@@ -136,6 +151,7 @@ class _PatientsState extends State<PatientsPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
+                        // Add text form fields for the patient details
                         SizedBox(
                           width: 300,
                           child: TextField(
@@ -147,10 +163,14 @@ class _PatientsState extends State<PatientsPage> {
                               ),
                               fillColor: Colors.white,
                               filled: true,
+                              errorText: firstNameController.text.isEmpty
+                                  ? AppStrings.firstNameError
+                                  : null,
                             ),
                           ),
                         ),
                         const SizedBox(height: 20),
+                        // Add text form fields for the patient details
                         SizedBox(
                           width: 300,
                           child: TextField(
@@ -162,10 +182,14 @@ class _PatientsState extends State<PatientsPage> {
                               ),
                               fillColor: Colors.white,
                               filled: true,
+                              errorText: lastNameController.text.isEmpty
+                                  ? AppStrings.lastNameError
+                                  : null,
                             ),
                           ),
                         ),
                         const SizedBox(height: 20),
+                        // Add text form fields for the patient details
                         SizedBox(
                           width: 300,
                           child: TextField(
@@ -177,6 +201,9 @@ class _PatientsState extends State<PatientsPage> {
                               ),
                               fillColor: Colors.white,
                               filled: true,
+                              errorText: dobController.text.isEmpty
+                                  ? AppStrings.dobError
+                                  : null,
                             ),
                             readOnly: true,
                             onTap: () => showDatePicker(
@@ -193,6 +220,7 @@ class _PatientsState extends State<PatientsPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
+                        // Add text form fields for the patient details
                         SizedBox(
                           width: 300,
                           child: TextField(
@@ -204,10 +232,14 @@ class _PatientsState extends State<PatientsPage> {
                               ),
                               fillColor: Colors.white,
                               filled: true,
+                              errorText: phoneController.text.isEmpty
+                                  ? AppStrings.phoneError
+                                  : null,
                             ),
                           ),
                         ),
                         const SizedBox(height: 20),
+                        // Add text form fields for the patient details
                         SizedBox(
                           width: 300,
                           child: DropdownButtonFormField<String>(
@@ -228,21 +260,34 @@ class _PatientsState extends State<PatientsPage> {
                               ),
                               fillColor: Colors.white,
                               filled: true,
+                              errorText: genderController.text.isEmpty
+                                  ? AppStrings.genderError
+                                  : null,
                             ),
                           ),
                         ),
                         const SizedBox(height: 20),
+                        // Add the button to add a new patient
                         MyButton(
                             text: AppStrings.addPatientButton,
-                            onTap: () => {
-                                  databaseService.createPatient(Patients(
-                                      firstName: firstNameController.text,
-                                      lastName: lastNameController.text,
-                                      dob: DateFormat('yyyy-MM-dd')
-                                          .parse(dobController.text),
-                                      phone: phoneController.text,
-                                      gender: genderController.text))
-                                },
+                            onTap: () {
+                              setState(() {
+                                if (firstNameController.text.isEmpty ||
+                                    lastNameController.text.isEmpty ||
+                                    dobController.text.isEmpty ||
+                                    phoneController.text.isEmpty ||
+                                    genderController.text.isEmpty) {
+                                  return;
+                                }
+                                databaseService.createPatient(Patients(
+                                    firstName: firstNameController.text,
+                                    lastName: lastNameController.text,
+                                    dob: DateFormat('yyyy-MM-dd')
+                                        .parse(dobController.text),
+                                    phone: phoneController.text,
+                                    gender: genderController.text));
+                              });
+                            },
                             width: 300),
                         const SizedBox(height: 20),
                       ],
@@ -257,112 +302,12 @@ class _PatientsState extends State<PatientsPage> {
     );
   }
 
+// Calculate the age of the patient
   calculateAge(date) {
     var now = new DateTime.now();
     var dob = date;
     var difference = now.difference(dob);
     var age = difference.inDays ~/ 365;
     return age;
-  }
-
-  void _showEditDialog(BuildContext context, data, dataid) {
-    final TextEditingController firstNameController =
-        TextEditingController(text: data[AppStrings.patientfirstName]);
-    final TextEditingController lastNameController =
-        TextEditingController(text: data[AppStrings.patientlastName]);
-    final TextEditingController dobController = TextEditingController(
-        text: DateFormat('yyyy-MM-dd')
-            .format(data[AppStrings.patientdob].toDate()));
-    final TextEditingController phoneController =
-        TextEditingController(text: data[AppStrings.patientPhone]);
-    final TextEditingController genderController =
-        TextEditingController(text: data[AppStrings.patientGender]);
-
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text(AppStrings.editPatient),
-            content: Column(
-              children: [
-                TextField(
-                  controller: firstNameController,
-                  decoration: const InputDecoration(
-                    labelText: AppStrings.patientFirstNameLabel,
-                  ),
-                ),
-                TextField(
-                  controller: lastNameController,
-                  decoration: const InputDecoration(
-                    labelText: AppStrings.patientLastNameLabel,
-                  ),
-                ),
-                TextField(
-                  controller: dobController,
-                  decoration: const InputDecoration(
-                    labelText: AppStrings.patientDOBLabel,
-                  ),
-                  readOnly: true,
-                  onTap: () => showDatePicker(
-                    context: context,
-                    initialDate: data[AppStrings.patientdob].toDate(),
-                    firstDate: DateTime(1900),
-                    lastDate: DateTime.now(),
-                  ).then((value) {
-                    if (value != null) {
-                      dobController.text =
-                          DateFormat('yyyy-MM-dd').format(value);
-                    }
-                  }),
-                ),
-                TextField(
-                  controller: phoneController,
-                  decoration: const InputDecoration(
-                    labelText: AppStrings.patientPhone,
-                  ),
-                ),
-                DropdownButtonFormField<String>(
-                  value: genderController.text.isNotEmpty
-                      ? genderController.text
-                      : null,
-                  items:
-                      [AppStrings.male, AppStrings.female].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? value) {
-                    genderController.text = value ?? '';
-                  },
-                  decoration: const InputDecoration(
-                    labelText: AppStrings.patientGenderLabel,
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(AppStrings.cancelButton)),
-              TextButton(
-                  onPressed: () {
-                    databaseService.editPatient(
-                        dataid,
-                        Patients(
-                            firstName: firstNameController.text,
-                            lastName: lastNameController.text,
-                            dob: DateFormat('yyyy-MM-dd')
-                                .parse(dobController.text),
-                            phone: phoneController.text,
-                            gender: genderController.text));
-                    Navigator.pop(context);
-                  },
-                  child: const Text(AppStrings.saveButton))
-            ],
-          );
-        });
   }
 }

@@ -18,6 +18,7 @@ void main() {
         paymentStatus: 'Paid',
       );
 
+      // Check if the appointment object is created correctly
       expect(appointment.doctoruid, 'doctor123');
       expect(appointment.patientuid, 'patient456');
       expect(appointment.date, '2024-10-14');
@@ -37,6 +38,7 @@ void main() {
         paymentStatus: 'Not Paid',
       );
 
+      // Check if the data is correct
       expect(appointment.doctoruid, 'doctor789');
       expect(appointment.patientuid, 'patient012');
       expect(appointment.date, '2024-10-15');
@@ -55,7 +57,8 @@ void main() {
         status: 'Confirmed',
         paymentStatus: 'Paid',
       );
-
+      
+      // Expected Map
       final expectedMap = {
         'doctoruid': 'doctor123',
         'patientuid': 'patient456',
@@ -65,6 +68,7 @@ void main() {
         'paymentStatus': 'Paid',
       };
 
+      // Compare the expected map with the actual map
       expect(appointment.toMap(), expectedMap);
     });
 
