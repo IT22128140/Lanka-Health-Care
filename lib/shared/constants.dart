@@ -296,4 +296,5 @@ class AppStrings {
   static const String notAvailable = 'N/A';
   static const String qrCodePng = 'qr_code.png';
   static const String none = 'none';
+  static const String docUidValidation = 'Doctor UID cannot be empty';
 }
