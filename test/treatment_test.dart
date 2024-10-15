@@ -34,7 +34,7 @@ void main() {
       expect(treatmentHistory.toMap(), expectedMap);
     });
 
-     // Test case to ensure `fromSnapshot` correctly creates an instance from a valid snapshot
+     // Test case to ensure `fromSnapshot` correctly creates an instance from a valid snapshot(firestore documentSnapshot)
     test(
         'Positive: fromSnapshot should create TreatmentHistory from valid DocumentSnapshot',
         () {
