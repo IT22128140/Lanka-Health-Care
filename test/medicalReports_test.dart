@@ -15,12 +15,14 @@ void main() {
         surgeries: 'Appendectomy',
       );
 
+      // Expected map
       final expectedMap = {
         'allergies': 'Pollen',
         'medications': 'Paracetamol',
         'surgeries': 'Appendectomy',
       };
 
+      // Compare the expected map with the actual map
       expect(medicalReports.toMap(), expectedMap);
     });
 

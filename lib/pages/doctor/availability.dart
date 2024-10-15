@@ -16,7 +16,9 @@ class AvailabilityPage extends StatefulWidget {
 }
 
 class _AvailabilityState extends State<AvailabilityPage> {
+  // Define the required variables
   final DatabaseService database = DatabaseService();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final User user = FirebaseAuth.instance.currentUser!;
 
   final TextEditingController dateController = TextEditingController();
@@ -26,21 +28,25 @@ class _AvailabilityState extends State<AvailabilityPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Scaffold properties
       appBar: AppBar(
         title: const Text(AppStrings.availability),
         backgroundColor: Colors.white,
-        elevation: 5.0, // This adds a shadow to the AppBar
+        elevation: 5.0,
         shadowColor: Colors.grey,
       ),
+      // Drawer
       drawer: const DrawerDoctor(),
       body: Center(
         child: Row(
           children: [
+            // Display the availability
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: database.getAvailability(user.uid),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Display a loading indicator while fetching the data
                     return const Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
@@ -48,13 +54,16 @@ class _AvailabilityState extends State<AvailabilityPage> {
                     );
                   } else if (!snapshot.hasData ||
                       (snapshot.data as QuerySnapshot).docs.isEmpty) {
+                        // Display a message if no data is available
                     return const Text(AppStrings.notavailable,
                         style: TextStyle(color: Colors.blue, fontSize: 30));
                   } else if (snapshot.hasError) {
+                    // Display an error message if an error occurs
                     return Text('${AppStrings.error}: ${snapshot.error}',
                         style:
                             const TextStyle(color: Colors.blue, fontSize: 30));
                   } else {
+                    // Display the availability data
                     final QuerySnapshot availability =
                         snapshot.data as QuerySnapshot;
                     return ListView.builder(
@@ -67,6 +76,7 @@ class _AvailabilityState extends State<AvailabilityPage> {
                           title: Text(data[AppStrings.date]),
                           subtitle: Text(
                               '${data[AppStrings.arrivetime]} - ${data[AppStrings.leavetime]}'),
+                              // Add edit and delete buttons
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -99,10 +109,11 @@ class _AvailabilityState extends State<AvailabilityPage> {
               child: Container(
                 width: 300,
                 color: const Color.fromARGB(255, 229, 246, 255),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                child: Form(
+                  key: _formKey,
                   child: Column(
                     children: [
+                      // Add availability title
                       const Text(
                         AppStrings.addavailability,
                         style: TextStyle(
@@ -111,8 +122,9 @@ class _AvailabilityState extends State<AvailabilityPage> {
                         ),
                       ),
                       const SizedBox(height: 40),
+                      // Add text form fields for the availability details
                       SizedBox(
-                        width: 300, // Set a specific width
+                        width: 300,
                         child: DropdownButtonFormField<String>(
                           value: dateController.text.isEmpty
                               ? null
@@ -144,12 +156,19 @@ class _AvailabilityState extends State<AvailabilityPage> {
                               dateController.text = newValue!;
                             });
                           },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return AppStrings.dateValidation;
+                            }
+                            return null;
+                          },
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
+                      // Add text form fields for the availability details
                       SizedBox(
-                        width: 300, // Set a specific width
-                        child: TextField(
+                        width: 300,
+                        child: TextFormField(
                           controller: arrivetimeController,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -167,12 +186,19 @@ class _AvailabilityState extends State<AvailabilityPage> {
                               arrivetimeController.text = value.format(context);
                             }
                           }),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return AppStrings.arrivalTimeValidation;
+                            }
+                            return null;
+                          },
                         ),
                       ),
                       const SizedBox(height: 20),
+                      // Add text form fields for the availability details
                       SizedBox(
-                        width: 300, // Set a specific width
-                        child: TextField(
+                        width: 300,
+                        child: TextFormField(
                           controller: leavetimeController,
                           decoration: InputDecoration(
                             labelText: AppStrings.leavelabeltext,
@@ -190,22 +216,31 @@ class _AvailabilityState extends State<AvailabilityPage> {
                               leavetimeController.text = value.format(context);
                             }
                           }),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return AppStrings.leaveTimeValidation;
+                            }
+                            return null;
+                          },
                         ),
                       ),
                       const SizedBox(height: 20),
+                      // Add buttons to cancel or save the availability
                       Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: MyButton(
                           text: AppStrings.addavailability,
                           onTap: () {
-                            database.addAvailability(
-                              Availability(
-                                date: dateController.text,
-                                arrivetime: arrivetimeController.text,
-                                leavetime: leavetimeController.text,
-                              ),
-                              user.uid,
-                            );
+                            if (_formKey.currentState!.validate()) {
+                              database.addAvailability(
+                                Availability(
+                                  date: dateController.text,
+                                  arrivetime: arrivetimeController.text,
+                                  leavetime: leavetimeController.text,
+                                ),
+                                user.uid,
+                              );
+                            }
                           },
                           width: 300,
                         ),
